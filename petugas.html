@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Daftar Petugas</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+    <style>
+      body {
+        background: #f5f6f8;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        height: 100vh;
+        background: white;
+        border-right: 1px solid #e5e5e5;
+        padding: 20px;
+      }
+
+      .sidebar .nav-link {
+        color: #333;
+        margin-bottom: 10px;
+      }
+
+      .sidebar .nav-link.active {
+        background: #8bc34a;
+        color: white;
+        border-radius: 8px;
+      }
+
+      /* Header */
+      .header-title {
+        font-weight: 600;
+      }
+
+      /* Table */
+      .table thead {
+        background: #f1f1f1;
+      }
+
+      /* Button */
+      .btn-green {
+        background: #8bc34a;
+        color: white;
+      }
+
+      .btn-green:hover {
+        background: #7cb342;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container-fluid">
+      <div class="row">
+
+        <!-- Sidebar -->
+        <div class="col-md-2 sidebar">
+          <h5 class="mb-4">LivestockID</h5>
+
+          <ul class="nav flex-column">
+            <li class="nav-item">
+              <a class="nav-link" href="#">Overview</a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="#">Ternak</a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="#">Kandang</a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link active" href="#">Petugas</a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="#">Rekam Kesehatan</a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="#">Catatan Produksi</a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Content -->
+        <div class="col-md-10 p-4">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="header-title">Daftar Petugas</h3>
+
+            <button class="btn btn-green">Tambah Petugas</button>
+          </div>
+
+          <!-- Search -->
+          <div class="mb-3">
+            <input
+              type="text"
+              class="form-control w-25"
+              placeholder="Cari petugas..."
+            />
+          </div>
+
+          <!-- Table -->
+          <div class="table-responsive">
+            <table class="table align-middle">
+              <thead>
+                <tr>
+                  <th>ID Petugas</th>
+                  <th>Nama Petugas</th>
+                  <th>Jabatan</th>
+                  <th>Status Petugas</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr>
+                  <td>P01</td>
+                  <td>Adi</td>
+                  <td>Dokter Hewan</td>
+                  <td>Aktif</td>
+                </tr>
+
+                <tr>
+                  <td>P03</td>
+                  <td>Slamet</td>
+                  <td>Petugas Kandang</td>
+                  <td>Tidak Aktif</td>
+                </tr>
+
+                <tr>
+                  <td>P02</td>
+                  <td>Budi</td>
+                  <td>Dokter Hewan</td>
+                  <td>Aktif</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination -->
+          <div class="d-flex justify-content-between align-items-center mt-4">
+            <button class="btn btn-outline-secondary">Sebelumnya</button>
+
+            <nav>
+              <ul class="pagination mb-0">
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href=#">3</a></li>
+                <li class="page-item"><a class="page-link" href="#">4</a></li>
+                <li class="page-item"><a class="page-link" href="#">5</a></li>
+              </ul>
+            </nav>
+
+            <button class="btn btn-outline-secondary">Berikutnya</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
