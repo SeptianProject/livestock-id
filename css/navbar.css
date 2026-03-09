@@ -1,0 +1,151 @@
+
+.ls-navbar {
+  background: transparent;
+  padding: 1.1rem 0;
+  transition:
+    background var(--trans),
+    box-shadow var(--trans),
+    padding var(--trans);
+  border-bottom: 1px solid transparent;
+}
+
+.ls-navbar--scrolled {
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+  padding: 0.7rem 0;
+  border-bottom-color: var(--border);
+}
+
+/* ── Brand ────────────────────────────────────────────────────── */
+.ls-brand {
+  font-family: var(--font);
+  font-weight: 700;
+  font-size: 1.35rem;
+  color: var(--secondary);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  letter-spacing: -0.3px;
+}
+.ls-brand span {
+  color: var(--primary);
+}
+
+.ls-brand-icon {
+  width: 36px;
+  height: 36px;
+  background: var(--primary);
+  color: #fff;
+  border-radius: var(--radius-sm);
+  display: grid;
+  place-items: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+/* ── Nav Links ────────────────────────────────────────────────── */
+.ls-nav-link {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--secondary) !important;
+  padding: 0.4rem 0.8rem !important;
+  border-radius: var(--radius-sm);
+  transition:
+    color var(--trans),
+    background var(--trans);
+  position: relative;
+}
+.ls-nav-link::after {
+  content: "";
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: var(--primary);
+  border-radius: 2px;
+  transform: translateX(-50%);
+  transition: width var(--trans);
+}
+.ls-nav-link:hover::after,
+.ls-nav-link.active::after {
+  width: 60%;
+}
+.ls-nav-link.active {
+  color: var(--primary-dark) !important;
+}
+
+/* Transparent navbar (over hero) */
+.ls-navbar:not(.ls-navbar--scrolled) .ls-nav-link {
+  color: rgba(255, 255, 255, 0.88) !important;
+}
+.ls-navbar:not(.ls-navbar--scrolled) .ls-nav-link.active {
+  color: #fff !important;
+}
+.ls-navbar:not(.ls-navbar--scrolled) .ls-brand {
+  color: #fff;
+}
+.ls-navbar:not(.ls-navbar--scrolled) .ls-nav-link::after {
+  background: #fff;
+}
+
+/* ── CTA Buttons ──────────────────────────────────────────────── */
+.ls-btn-outline {
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.5rem 1.1rem;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--primary);
+  color: var(--primary);
+  background: transparent;
+  transition: all var(--trans);
+  white-space: nowrap;
+}
+.ls-btn-outline:hover {
+  background: var(--primary);
+  color: #fff;
+}
+
+.ls-navbar:not(.ls-navbar--scrolled) .ls-btn-outline {
+  border-color: rgba(255, 255, 255, 0.7);
+  color: #fff;
+}
+.ls-navbar:not(.ls-navbar--scrolled) .ls-btn-outline:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: #fff;
+}
+
+.ls-btn-solid {
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.5rem 1.2rem;
+  border-radius: var(--radius-sm);
+  background: var(--primary);
+  color: #fff;
+  border: 2px solid var(--primary);
+  transition: all var(--trans);
+  white-space: nowrap;
+}
+.ls-btn-solid:hover {
+  background: var(--primary-dark);
+  border-color: var(--primary-dark);
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(150, 202, 80, 0.35);
+}
+
+/* ── Mobile Toggler ───────────────────────────────────────────── */
+.ls-toggler {
+  border: none;
+  color: #fff;
+  font-size: 1.5rem;
+  padding: 0.25rem 0.4rem;
+  line-height: 1;
+  background: transparent;
+}
+.ls-navbar--scrolled .ls-toggler {
+  color: var(--secondary);
+}

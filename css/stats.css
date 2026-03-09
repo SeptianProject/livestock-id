@@ -1,0 +1,105 @@
+
+.ls-stats {
+  background: var(--secondary);
+}
+
+.ls-stat-item {
+  padding: 1.5rem 1rem;
+}
+
+.ls-stat-number {
+  font-size: clamp(2.8rem, 6vw, 4rem);
+  font-weight: 800;
+  color: var(--primary);
+  line-height: 1;
+  display: inline;
+  font-variant-numeric: tabular-nums;
+}
+.ls-stat-suffix {
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  font-weight: 800;
+  color: var(--primary);
+  display: inline;
+  line-height: 1;
+}
+.ls-stat-text {
+  font-size: clamp(2rem, 5vw, 3.2rem) !important;
+}
+
+.ls-stat-label {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 0.5rem;
+  font-weight: 500;
+}
+
+/* ================================================================
+   BENEFITS / CARA KERJA
+================================================================ */
+.ls-benefits {
+  background: var(--white);
+}
+
+.ls-benefit-card {
+  background: var(--white);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition:
+    transform var(--trans),
+    box-shadow var(--trans),
+    border-color var(--trans);
+}
+.ls-benefit-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-xl);
+  border-color: var(--primary);
+}
+
+.ls-benefit-img-wrap {
+  position: relative;
+  height: 220px;
+  overflow: hidden;
+}
+.ls-benefit-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+}
+.ls-benefit-card:hover .ls-benefit-img {
+  transform: scale(1.05);
+}
+
+.ls-benefit-num {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  width: 38px;
+  height: 38px;
+  background: var(--primary);
+  color: #fff;
+  border-radius: var(--radius-sm);
+  display: grid;
+  place-items: center;
+  font-size: 0.85rem;
+  font-weight: 800;
+  box-shadow: 0 4px 12px rgba(150, 202, 80, 0.4);
+}
+
+.ls-benefit-body {
+  padding: 1.4rem 1.5rem;
+}
+.ls-benefit-body h4 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--dark);
+  margin-bottom: 0.6rem;
+}
+.ls-benefit-body p {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+  margin: 0;
+}

@@ -1,0 +1,253 @@
+
+.ls-dashboard-showcase {
+  background: var(--bg-light);
+}
+
+/* ── Tab Buttons ──────────────────────────────────────────────── */
+.ls-dash-tab {
+  background: var(--white);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-family: var(--font);
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 0.55rem 1.1rem;
+  cursor: pointer;
+  transition: all var(--trans);
+  display: flex;
+  align-items: center;
+}
+.ls-dash-tab:hover {
+  border-color: var(--primary);
+  color: var(--primary-dark);
+}
+.ls-dash-tab.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(150, 202, 80, 0.3);
+}
+
+/* ── Browser Mockup Frame ─────────────────────────────────────── */
+.ls-mockup-wrap {
+  max-width: 900px;
+  margin: 0 auto;
+  filter: drop-shadow(0 24px 64px rgba(0, 0, 0, 0.15));
+}
+
+.ls-mockup-frame {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.ls-mockup-bar {
+  background: #f0f2f5;
+  padding: 0.7rem 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.ls-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+}
+.ls-dot-red {
+  background: #ff5f57;
+}
+.ls-dot-yellow {
+  background: #febc2e;
+}
+.ls-dot-green {
+  background: #28c840;
+}
+
+.ls-mockup-url {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.2rem 0.75rem;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-left: 0.5rem;
+  flex: 1;
+  max-width: 300px;
+}
+.ls-mockup-url::before {
+  content: "🔒 ";
+}
+
+/* ── Tab Content Panels ───────────────────────────────────────── */
+.ls-tab-panel {
+  display: none;
+}
+.ls-tab-panel.active {
+  display: block;
+}
+
+.ls-mock-screen {
+  padding: 1.25rem;
+  min-height: 280px;
+}
+
+.ls-mock-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+.ls-mock-title {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--dark);
+}
+.ls-mock-date {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* ── Stats Grid ───────────────────────────────────────────────── */
+.ls-mock-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.75rem;
+}
+
+.ls-mock-stat-card {
+  background: var(--bg-light);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.85rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  position: relative;
+}
+.ls-mock-stat-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  display: grid;
+  place-items: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+.ls-mock-stat-value {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--dark);
+  line-height: 1;
+}
+.ls-mock-stat-label {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-top: 0.15rem;
+}
+.ls-mock-stat-badge {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.7rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  border-radius: 100px;
+  background: var(--primary-light);
+  color: var(--primary-dark);
+}
+.ls-mock-stat-badge.up {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+/* ── Chart ────────────────────────────────────────────────────── */
+.ls-chart-placeholder svg {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-sm);
+  background: var(--bg-light);
+  padding: 0.5rem;
+}
+.ls-chart-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  padding: 0.25rem 0.5rem 0;
+}
+
+/* ── Health Table ─────────────────────────────────────────────── */
+.ls-mock-health-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.5fr 1fr;
+  gap: 0.5rem;
+  padding: 0.65rem 0.5rem;
+  font-size: 0.8rem;
+  border-bottom: 1px solid var(--border);
+  align-items: center;
+}
+.ls-mock-health-row:last-child {
+  border-bottom: none;
+}
+.ls-mock-health-row.header {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+  background: var(--bg-light);
+  border-radius: var(--radius-sm);
+  margin-bottom: 0.25rem;
+}
+
+/* Status Badges */
+.ls-status-badge {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.2rem 0.65rem;
+  border-radius: 100px;
+}
+.ls-status-badge.success {
+  background: #dcfce7;
+  color: #16a34a;
+}
+.ls-status-badge.warning {
+  background: #fff7ed;
+  color: #c2410c;
+}
+.ls-status-badge.danger {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+/* ── Officer List ─────────────────────────────────────────────── */
+.ls-mock-officer {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.75rem 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+.ls-mock-officer:last-child {
+  border-bottom: none;
+}
+
+.ls-officer-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.ls-officer-info {
+  flex: 1;
+  font-size: 0.82rem;
+}
