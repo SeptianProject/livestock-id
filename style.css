@@ -1,1 +1,16 @@
-@import url("https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css");
+/* ================================================================
+   LIVESTOCK ID — LANDING PAGE STYLES
+   Entry point: mengimport semua file CSS modular.
+   Edit setiap file di css/ sesuai sectionnya.
+   ================================================================ */
+
+@import url("css/variables.css");
+@import url("css/navbar.css");
+@import url("css/hero.css");
+@import url("css/partners.css");
+@import url("css/features.css");
+@import url("css/dashboard.css");
+@import url("css/stats.css");
+@import url("css/testimonials.css");
+@import url("css/cta-footer.css");
+@import url("css/responsive.css");
