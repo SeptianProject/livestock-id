@@ -1,138 +1,514 @@
 <!doctype html>
-<html lang="en">
+<html lang="id">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Overview — LivestockID</title>
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <section class="container py-4">
-      <div class="row gap-4">
-        <!-- sidebar -->
-        <aside class="col-4 w-auto bg-warning">
-          <div
-            class="p-2 rounded-3 mb-4 d-flex align-items-center justify-content-center">
-            <h5 class="text-primary">Livestock ID</h5>
-          </div>
-          <div class="d-flex flex-column gap-4">
-            <div class="col">
-              <a
-                href="#overview"
-                data-bs-toggle="collapse"
-                data-bs-target="#overview"
-                class="btn btn-primary"
-                >Overview</a
-              >
-            </div>
-            <div class="col">
-              <button
-                href="#ternak"
-                data-bs-toggle="collapse"
-                data-bs-target="#ternak"
-                class="btn">
-                Ternak
-              </button>
-            </div>
-            <div class="col">
-              <a
-                href="#kandang"
-                data-bs-toggle="collapse"
-                data-bs-target="#kandang"
-                class="btn"
-                >Kandang</a
-              >
-            </div>
-            <div class="col">
-              <a href="#petugas" class="btn">Petugas</a>
-            </div>
-            <div class="col">
-              <a href="#rekam-kesehatan" class="btn">Rekam Kesehatan</a>
-            </div>
-            <div class="col">
-              <a href="#catatan-produksi" class="btn">Catatan Produksi</a>
-            </div>
-          </div>
-        </aside>
+    <div class="layout">
+      <!-- ===== SIDEBAR ===== -->
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+          <div class="brand-icon"><i class="bi bi-grid-fill"></i></div>
+          <div class="brand-name">Livestock<span>ID</span></div>
+        </div>
 
-        <!-- main view kandang -->
-        <main class="col-8 collapse" id="kandang">
-          <h1 class="h4">Tambah Kandang</h1>
-          <form action="" method="POST" class="row gap-4">
-            <div class="row">
-              <div class="col">
-                <label for="namaKandang" class="form-label">Nama Kandang</label>
-                <input type="text" class="form-control" id="namaKandang" />
-              </div>
-              <div class="col">
-                <label for="lokasi" class="form-label">Lokasi</label>
-                <input type="text" class="form-control" id="lokasi" />
-              </div>
-            </div>
-            <div class="d-flex gap-2">
-              <button type="submit" class="btn btn-primary">
-                Tambah Kandang
-              </button>
-              <button type="button" class="btn btn-outline-primary">
-                Tambah dan Buat Baru
-              </button>
-              <button type="button" class="btn btn-outline-secondary">
-                Batal
-              </button>
-            </div>
-          </form>
-        </main>
+        <nav class="sidebar-nav">
+          <p class="nav-section-label">Menu Utama</p>
+          <ul style="list-style: none; padding: 0; margin: 0">
+            <li class="nav-item">
+              <a href="index.html" class="nav-link-item active">
+                <i class="bi bi-speedometer2"></i>
+                <span>Overview</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="ternak/index.html" class="nav-link-item">
+                <i class="bi bi-box-seam"></i>
+                <span>Ternak</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="kandang/index.html" class="nav-link-item">
+                <i class="bi bi-house-door"></i>
+                <span>Kandang</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="petugas/index.html" class="nav-link-item">
+                <i class="bi bi-people"></i>
+                <span>Petugas</span>
+              </a>
+            </li>
+          </ul>
 
-        <!-- main view ternak-->
-        <main class="col-8 collapse bg-warning" id="ternak">
-          <h1 class="h4">Tambah Ternak</h1>
-          <form action="" method="POST" class="row gap-4">
-            <div class="row">
-              <div class="col">
-                <label for="namaTernak" class="form-label">Nama Ternak</label>
-                <input type="text" class="form-control" id="namaTernak" />
+          <p class="nav-section-label">Pencatatan</p>
+          <ul style="list-style: none; padding: 0; margin: 0">
+            <li class="nav-item">
+              <a href="#" class="nav-link-item">
+                <i class="bi bi-heart-pulse"></i>
+                <span>Rekam Kesehatan</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link-item">
+                <i class="bi bi-journal-text"></i>
+                <span>Catatan Produksi</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <div class="sidebar-footer">
+          <a href="../auth/login.html" class="nav-link-item">
+            <i class="bi bi-box-arrow-left"></i>
+            <span>Keluar</span>
+          </a>
+        </div>
+      </aside>
+
+      <!-- ===== MAIN AREA ===== -->
+      <div class="main-area">
+        <!-- TOPBAR -->
+        <header class="topbar">
+          <button
+            class="sidebar-toggle"
+            id="sidebarToggle"
+            onclick="toggleSidebar()">
+            <i class="bi bi-list"></i>
+          </button>
+          <span class="topbar-title">Overview</span>
+          <div class="topbar-actions">
+            <div class="topbar-notif" title="Notifikasi">
+              <i class="bi bi-bell"></i>
+              <span class="notif-badge"></span>
+            </div>
+            <a
+              href="profile/index.html"
+              style="
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                text-decoration: none;
+              ">
+              <div class="topbar-user-info">
+                <span class="name">Admin</span>
+                <span class="role">Administrator</span>
               </div>
-              <div class="col">
-                <label for="tanggalLahir" class="form-label"
-                  >Tanggal Lahir</label
+              <div class="topbar-avatar" title="Lihat profil">AS</div>
+            </a>
+          </div>
+        </header>
+
+        <!-- PAGE CONTENT -->
+        <main class="page-content">
+          <!-- Page Header -->
+          <div class="page-header">
+            <h1>Selamat Datang, Admin 👋</h1>
+            <p>
+              Pantau dan kelola seluruh aktivitas peternakan Anda dari satu
+              tempat.
+            </p>
+          </div>
+
+          <!-- ─── STAT CARDS ─── -->
+          <div class="stat-grid">
+            <!-- Total Ternak -->
+            <div class="stat-card">
+              <div class="stat-icon green">
+                <i class="bi bi-box-seam-fill"></i>
+              </div>
+              <div class="stat-info">
+                <p class="label">Total Ternak</p>
+                <p class="value">248</p>
+                <span class="badge-trend up"
+                  ><i class="bi bi-arrow-up-short"></i>+12 bulan ini</span
                 >
-                <input type="date" class="form-control" id="tanggalLahir" />
               </div>
             </div>
-            <div class="row">
-              <div class="col">
-                <label for="jenisKelamin" class="form-label"
-                  >Jenis Kelamin</label
+            <!-- Kapasitas Kandang -->
+            <div class="stat-card">
+              <div class="stat-icon blue">
+                <i class="bi bi-house-door-fill"></i>
+              </div>
+              <div class="stat-info">
+                <p class="label">Kapasitas Kandang</p>
+                <p class="value">82%</p>
+                <span class="badge-trend neutral"
+                  ><i class="bi bi-dash"></i>248 / 300 slot</span
                 >
-                <select name="" id="jenisKelamin" class="form-select">
-                  <option value="jantan">Jantan</option>
-                  <option value="betina">Betina</option>
-                </select>
-              </div>
-              <div class="col">
-                <label for="idKandang" class="form-label">ID Kandang</label>
-                <input type="text" class="form-control" id="idKandang" />
               </div>
             </div>
-            <div class="d-flex gap-2">
-              <button type="submit" class="btn btn-primary">
-                Tambah Ternak
-              </button>
-              <button type="button" class="btn btn-outline-primary">
-                Tambah dan Buat Baru
-              </button>
-              <button type="button" class="btn btn-outline-secondary">
-                Batal
-              </button>
+            <!-- Produksi Hari Ini -->
+            <div class="stat-card">
+              <div class="stat-icon orange">
+                <i class="bi bi-droplet-fill"></i>
+              </div>
+              <div class="stat-info">
+                <p class="label">Produksi Hari Ini</p>
+                <p class="value">1.240 L</p>
+                <span class="badge-trend up"
+                  ><i class="bi bi-arrow-up-short"></i>+5% dari kemarin</span
+                >
+              </div>
             </div>
-          </form>
+            <!-- Dalam Penanganan -->
+            <div class="stat-card">
+              <div class="stat-icon red">
+                <i class="bi bi-bandaid-fill"></i>
+              </div>
+              <div class="stat-info">
+                <p class="label">Dalam Penanganan</p>
+                <p class="value">7</p>
+                <span class="badge-trend down"
+                  ><i class="bi bi-arrow-down-short"></i>-2 dari kemarin</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- ─── CHARTS ─── -->
+          <div class="chart-grid">
+            <!-- Tren Produksi -->
+            <div class="card-panel">
+              <div class="card-panel-header">
+                <div>
+                  <h3>Tren Produksi</h3>
+                  <p class="subtitle">Fluktuasi jumlah produksi harian</p>
+                </div>
+                <div class="period-tabs">
+                  <button
+                    class="period-tab active"
+                    onclick="switchPeriod(this, '7')">
+                    7 Hari
+                  </button>
+                  <button class="period-tab" onclick="switchPeriod(this, '30')">
+                    30 Hari
+                  </button>
+                </div>
+              </div>
+              <div class="chart-container">
+                <canvas id="produksiChart" height="220"></canvas>
+              </div>
+            </div>
+
+            <!-- Komposisi Ternak -->
+            <div class="card-panel">
+              <div class="card-panel-header">
+                <div>
+                  <h3>Komposisi Ternak</h3>
+                  <p class="subtitle">Populasi per jenis ternak</p>
+                </div>
+              </div>
+              <div
+                class="chart-container"
+                style="
+                  display: flex;
+                  flex-direction: column;
+                  align-items: center;
+                ">
+                <canvas id="ternakChart" height="200" width="200"></canvas>
+                <div
+                  id="ternakLegend"
+                  style="margin-top: 16px; width: 100%"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ─── ACTIVITY ─── -->
+          <div class="activity-grid">
+            <!-- Laporan Kesehatan -->
+            <div class="card-panel">
+              <div class="card-panel-header">
+                <div>
+                  <h3>Laporan Kesehatan Terbaru</h3>
+                  <p class="subtitle">5 pemeriksaan terakhir</p>
+                </div>
+                <a
+                  href="#"
+                  class="btn-outline-custom"
+                  style="font-size: 12px; padding: 6px 12px">
+                  <i class="bi bi-arrow-right"></i> Lihat Semua
+                </a>
+              </div>
+              <div style="overflow-x: auto">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>ID Ternak</th>
+                      <th>Jenis</th>
+                      <th>Diagnosa</th>
+                      <th>Petugas</th>
+                      <th>Tanggal</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>#TRN-042</strong></td>
+                      <td>Sapi Perah</td>
+                      <td>Mastitis ringan</td>
+                      <td>Budi S.</td>
+                      <td>09 Mar 2026</td>
+                      <td>
+                        <span class="status-badge observasi">Observasi</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><strong>#TRN-117</strong></td>
+                      <td>Kambing PE</td>
+                      <td>Sehat</td>
+                      <td>Rina W.</td>
+                      <td>09 Mar 2026</td>
+                      <td><span class="status-badge sehat">Sehat</span></td>
+                    </tr>
+                    <tr>
+                      <td><strong>#TRN-205</strong></td>
+                      <td>Sapi Perah</td>
+                      <td>Demam</td>
+                      <td>Ahmad F.</td>
+                      <td>08 Mar 2026</td>
+                      <td><span class="status-badge sakit">Sakit</span></td>
+                    </tr>
+                    <tr>
+                      <td><strong>#TRN-089</strong></td>
+                      <td>Domba Merino</td>
+                      <td>Sehat</td>
+                      <td>Sari N.</td>
+                      <td>08 Mar 2026</td>
+                      <td><span class="status-badge sehat">Sehat</span></td>
+                    </tr>
+                    <tr>
+                      <td><strong>#TRN-033</strong></td>
+                      <td>Sapi Potong</td>
+                      <td>Luka ringan</td>
+                      <td>Budi S.</td>
+                      <td>07 Mar 2026</td>
+                      <td>
+                        <span class="status-badge observasi">Observasi</span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Petugas Aktif -->
+            <div class="card-panel">
+              <div class="card-panel-header">
+                <div>
+                  <h3>Petugas Aktif</h3>
+                  <p class="subtitle">Melakukan tindakan hari ini</p>
+                </div>
+              </div>
+              <div>
+                <div class="petugas-item">
+                  <div class="petugas-avatar">BS</div>
+                  <div class="petugas-meta">
+                    <p class="petugas-name">Budi Santoso</p>
+                    <p class="petugas-role">Dokter Hewan</p>
+                  </div>
+                  <span class="status-badge aktif petugas-action">Aktif</span>
+                </div>
+                <div class="petugas-item">
+                  <div class="petugas-avatar">RW</div>
+                  <div class="petugas-meta">
+                    <p class="petugas-name">Rina Wulandari</p>
+                    <p class="petugas-role">Asisten Peternak</p>
+                  </div>
+                  <span class="status-badge aktif petugas-action">Aktif</span>
+                </div>
+                <div class="petugas-item">
+                  <div class="petugas-avatar">AF</div>
+                  <div class="petugas-meta">
+                    <p class="petugas-name">Ahmad Fauzi</p>
+                    <p class="petugas-role">Petugas Produksi</p>
+                  </div>
+                  <span class="status-badge aktif petugas-action">Aktif</span>
+                </div>
+                <div class="petugas-item">
+                  <div class="petugas-avatar">SN</div>
+                  <div class="petugas-meta">
+                    <p class="petugas-name">Sari Ningrum</p>
+                    <p class="petugas-role">Petugas Lapang</p>
+                  </div>
+                  <span class="status-badge nonaktif petugas-action"
+                    >Istirahat</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- /activity-grid -->
         </main>
       </div>
-    </section>
+      <!-- /main-area -->
+    </div>
+    <!-- /layout -->
 
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
-      crossorigin="anonymous"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    <script>
+      /* ── Sidebar toggle (mobile) ── */
+      function toggleSidebar() {
+        document.getElementById("sidebar").classList.toggle("open");
+      }
+
+      /* ── Color palette ── */
+      const PRIMARY = "#96CA50";
+      const PRIMARY_DARK = "#78a83c";
+      const SECONDARY = "#3D4658";
+      const PALETTE = ["#96CA50", "#3D4658", "#F59E0B", "#3B82F6", "#EC4899"];
+
+      /* ── Produksi Chart ── */
+      const data7 = [1080, 1150, 1090, 1240, 1300, 1210, 1240];
+      const data30 = [
+        980, 1020, 1100, 1050, 1090, 1130, 1080, 1150, 1090, 1240, 1300, 1210,
+        1240, 1190, 1280, 1320, 1200, 1170, 1250, 1300, 1280, 1310, 1190, 1220,
+        1260, 1300, 1280, 1240, 1310, 1240,
+      ];
+      const labels7 = ["Sel", "Rab", "Kam", "Jum", "Sab", "Min", "Sen"].map(
+        (d, i) => {
+          const dt = new Date("2026-03-09");
+          dt.setDate(dt.getDate() - (6 - i));
+          return dt.toLocaleDateString("id-ID", {
+            day: "numeric",
+            month: "short",
+          });
+        },
+      );
+      const labels30 = Array.from({ length: 30 }, (_, i) => {
+        const dt = new Date("2026-03-09");
+        dt.setDate(dt.getDate() - (29 - i));
+        return dt.toLocaleDateString("id-ID", {
+          day: "numeric",
+          month: "short",
+        });
+      });
+
+      const prodCtx = document.getElementById("produksiChart").getContext("2d");
+      const gradient = prodCtx.createLinearGradient(0, 0, 0, 220);
+      gradient.addColorStop(0, "rgba(150,202,80,.25)");
+      gradient.addColorStop(1, "rgba(150,202,80,0)");
+
+      const prodChart = new Chart(prodCtx, {
+        type: "line",
+        data: {
+          labels: labels7,
+          datasets: [
+            {
+              label: "Produksi (L)",
+              data: data7,
+              borderColor: PRIMARY,
+              backgroundColor: gradient,
+              borderWidth: 2.5,
+              fill: true,
+              tension: 0.4,
+              pointBackgroundColor: PRIMARY,
+              pointRadius: 4,
+              pointHoverRadius: 6,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => ` ${ctx.parsed.y.toLocaleString("id-ID")} L`,
+              },
+            },
+          },
+          scales: {
+            x: {
+              grid: { display: false },
+              ticks: {
+                font: { family: "Poppins", size: 11 },
+                color: "#7c8493",
+              },
+            },
+            y: {
+              grid: { color: "#f0f2f5" },
+              ticks: {
+                font: { family: "Poppins", size: 11 },
+                color: "#7c8493",
+                callback: (v) => v.toLocaleString("id-ID") + " L",
+              },
+            },
+          },
+        },
+      });
+
+      function switchPeriod(btn, period) {
+        document
+          .querySelectorAll(".period-tab")
+          .forEach((t) => t.classList.remove("active"));
+        btn.classList.add("active");
+        if (period === "7") {
+          prodChart.data.labels = labels7;
+          prodChart.data.datasets[0].data = data7;
+        } else {
+          prodChart.data.labels = labels30;
+          prodChart.data.datasets[0].data = data30;
+        }
+        prodChart.update();
+      }
+
+      /* ── Ternak Composition Chart ── */
+      const ternakData = {
+        labels: ["Sapi Perah", "Sapi Potong", "Kambing PE", "Domba Merino"],
+        values: [112, 68, 45, 23],
+      };
+
+      const ternakCtx = document.getElementById("ternakChart").getContext("2d");
+      new Chart(ternakCtx, {
+        type: "doughnut",
+        data: {
+          labels: ternakData.labels,
+          datasets: [
+            {
+              data: ternakData.values,
+              backgroundColor: PALETTE,
+              borderWidth: 2,
+              borderColor: "#fff",
+              hoverOffset: 6,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          cutout: "68%",
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => ` ${ctx.label}: ${ctx.parsed} ekor`,
+              },
+            },
+          },
+        },
+      });
+
+      /* Custom legend */
+      const total = ternakData.values.reduce((a, b) => a + b, 0);
+      document.getElementById("ternakLegend").innerHTML = ternakData.labels
+        .map(
+          (l, i) => `
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f0f2f5">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="width:10px;height:10px;border-radius:50%;background:${PALETTE[i]};display:inline-block;flex-shrink:0"></span>
+            <span style="font-size:12px;color:#3D4658">${l}</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="font-size:12px;font-weight:600;color:#000005">${ternakData.values[i]}</span>
+            <span style="font-size:11px;color:#7c8493">${Math.round((ternakData.values[i] / total) * 100)}%</span>
+          </div>
+        </div>`,
+        )
+        .join("");
+    </script>
   </body>
 </html>

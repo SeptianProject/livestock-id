@@ -1,0 +1,38 @@
+@media (max-width: 768px) {
+  /* Sidebar becomes off-canvas */
+  .sidebar {
+    position: fixed;
+    left: -100%;
+    top: 0;
+    height: 100%;
+    transition: left 0.25s ease;
+    z-index: 200;
+  }
+
+  .sidebar.open {
+    left: 0;
+  }
+
+  /* Stack layout vertically */
+  .layout {
+    display: block;
+  }
+
+  .main-area {
+    width: 100%;
+  }
+
+  /* Tighter content padding */
+  .page-content {
+    padding: 16px;
+  }
+
+  .topbar {
+    padding: 0 16px;
+  }
+
+  /* Show hamburger button */
+  .sidebar-toggle {
+    display: flex !important;
+  }
+}
