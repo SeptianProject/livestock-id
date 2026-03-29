@@ -11,11 +11,9 @@
   --text-muted: #7c8493;
   --border: #e8ecf0;
 
-  /* Dimensions */
   --sidebar-width: 260px;
   --topbar-height: 64px;
 
-  /* Misc */
   --transition: 0.2s ease;
   --radius: 12px;
   --shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.06);

@@ -1,8 +1,3 @@
-/* =============================================
-   PAGE: Overview — dashboard/index.html
-   ============================================= */
-
-/* ── Stat cards grid ── */
 .stat-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -22,7 +17,6 @@
   }
 }
 
-/* ── Chart grid (line + doughnut) ── */
 .chart-grid {
   display: grid;
   grid-template-columns: 2fr 1fr;
@@ -36,7 +30,6 @@
   }
 }
 
-/* ── Activity grid (table + petugas) ── */
 .activity-grid {
   display: grid;
   grid-template-columns: 3fr 2fr;

@@ -1,9 +1,3 @@
-/* ================================================================
-   LIVESTOCK ID — LANDING PAGE STYLES
-   Entry point: mengimport semua file CSS modular.
-   Edit setiap file di css/ sesuai sectionnya.
-   ================================================================ */
-
 @import url("css/variables.css");
 @import url("css/navbar.css");
 @import url("css/hero.css");

@@ -1,7 +1,3 @@
-/* =============================================
-   PAGE: Profile — dashboard/profile/index.html
-   ============================================= */
-
 /* ── Hero header ── */
 .profile-header-card {
   background: linear-gradient(
@@ -53,7 +49,6 @@
   opacity: 0.8;
 }
 
-/* ── Two-column edit layout ── */
 .profile-grid {
   display: grid;
   grid-template-columns: 2fr 1fr;
