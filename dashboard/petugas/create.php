@@ -119,7 +119,7 @@
             </p>
           </div>
 
-          <form action="" method="POST">
+          <form action="insert.php" method="POST">
             <div class="form-card">
               <p class="form-section-title">Data Pribadi</p>
               <div
