@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tambah Kandang — LivestockID</title>
+    <title>Tambah Ternak — LivestockID</title>
     <link rel="stylesheet" href="../style.css" />
   </head>
   <body>
@@ -23,12 +23,12 @@
               >
             </li>
             <li class="nav-item">
-              <a href="../ternak/index.html" class="nav-link-item"
+              <a href="index.html" class="nav-link-item active"
                 ><i class="bi bi-box-seam"></i><span>Ternak</span></a
               >
             </li>
             <li class="nav-item">
-              <a href="index.html" class="nav-link-item active"
+              <a href="../kandang/index.html" class="nav-link-item"
                 ><i class="bi bi-house-door"></i><span>Kandang</span></a
               >
             </li>
@@ -81,13 +81,13 @@
                 align-items: center;
                 gap: 4px;
               "
-              ><i class="bi bi-chevron-left"></i> Kandang</a
+              ><i class="bi bi-chevron-left"></i> Ternak</a
             >
             <i
               class="bi bi-chevron-right"
               style="font-size: 11px; color: #b0b8c4"></i>
             <span class="topbar-title" style="font-size: 15px"
-              >Tambah Kandang</span
+              >Tambah Ternak</span
             >
           </div>
           <div class="topbar-actions">
@@ -113,13 +113,15 @@
 
         <main class="page-content">
           <div class="page-header">
-            <h1>Tambah Kandang Baru</h1>
-            <p>Daftarkan kandang baru untuk menampung ternak Anda.</p>
+            <h1>Tambah Ternak Baru</h1>
+            <p>
+              Isi formulir di bawah untuk mendaftarkan ternak baru ke sistem.
+            </p>
           </div>
 
-          <form action="" method="POST">
+          <form action="insert.php" method="POST">
             <div class="form-card">
-              <p class="form-section-title">Informasi Kandang</p>
+              <p class="form-section-title">Informasi Dasar</p>
               <div
                 style="
                   display: grid;
@@ -127,63 +129,26 @@
                   gap: 16px;
                 ">
                 <div>
-                  <label class="form-label" for="idKandang"
-                    >ID Kandang <span style="color: #e05252">*</span></label
+                  <label class="form-label" for="idTernak"
+                    >ID Ternak <span style="color: #e05252">*</span></label
                   >
                   <input
                     type="text"
-                    id="idKandang"
-                    name="id_kandang"
+                    id="idTernak"
+                    name="id_ternak"
                     class="form-control-custom"
-                    placeholder="Contoh: KDG-13"
-                    required />
-                </div>
-                <div>
-                  <label class="form-label" for="namaKandang"
-                    >Nama Kandang <span style="color: #e05252">*</span></label
-                  >
-                  <input
-                    type="text"
-                    id="namaKandang"
-                    name="nama_kandang"
-                    class="form-control-custom"
-                    placeholder="Contoh: Kandang Sapi Perah C"
-                    required />
-                </div>
-                <div>
-                  <label class="form-label" for="lokasi"
-                    >Lokasi / Blok <span style="color: #e05252">*</span></label
-                  >
-                  <input
-                    type="text"
-                    id="lokasi"
-                    name="lokasi"
-                    class="form-control-custom"
-                    placeholder="Contoh: Blok Timur"
-                    required />
-                </div>
-                <div>
-                  <label class="form-label" for="kapasitas"
-                    >Kapasitas (ekor)
-                    <span style="color: #e05252">*</span></label
-                  >
-                  <input
-                    type="number"
-                    id="kapasitas"
-                    name="kapasitas"
-                    class="form-control-custom"
-                    placeholder="Contoh: 100"
-                    min="1"
+                    placeholder="Contoh: TRN-249"
                     required />
                 </div>
                 <div>
                   <label class="form-label" for="jenisTernak"
-                    >Jenis Ternak Utama</label
+                    >Jenis Ternak <span style="color: #e05252">*</span></label
                   >
                   <select
                     id="jenisTernak"
                     name="jenis_ternak"
-                    class="form-control-custom">
+                    class="form-control-custom"
+                    required>
                     <option value="" disabled selected>
                       Pilih jenis ternak
                     </option>
@@ -191,26 +156,62 @@
                     <option>Sapi Potong</option>
                     <option>Kambing PE</option>
                     <option>Domba Merino</option>
-                    <option>Campuran</option>
                   </select>
                 </div>
                 <div>
-                  <label class="form-label" for="statusKandang"
-                    >Status Kandang</label
+                  <label class="form-label" for="jenisKelamin"
+                    >Jenis Kelamin <span style="color: #e05252">*</span></label
                   >
                   <select
-                    id="statusKandang"
-                    name="status"
-                    class="form-control-custom">
-                    <option value="aktif" selected>Aktif</option>
-                    <option value="nonaktif">Tidak Aktif</option>
-                    <option value="perbaikan">Dalam Perbaikan</option>
+                    id="jenisKelamin"
+                    name="jenis_kelamin"
+                    class="form-control-custom"
+                    required>
+                    <option value="" disabled selected>
+                      Pilih jenis kelamin
+                    </option>
+                    <option value="jantan">Jantan</option>
+                    <option value="betina">Betina</option>
                   </select>
+                </div>
+                <div>
+                  <label class="form-label" for="tanggalLahir"
+                    >Tanggal Lahir <span style="color: #e05252">*</span></label
+                  >
+                  <input
+                    type="date"
+                    id="tanggalLahir"
+                    name="tanggal_lahir"
+                    class="form-control-custom"
+                    required />
+                </div>
+                <div>
+                  <label class="form-label" for="beratBadan"
+                    >Berat Badan (kg)</label
+                  >
+                  <input
+                    type="number"
+                    id="beratBadan"
+                    name="berat_badan"
+                    class="form-control-custom"
+                    placeholder="Contoh: 350"
+                    min="0" />
+                </div>
+                <div>
+                  <label class="form-label" for="warna"
+                    >Warna / Ciri Fisik</label
+                  >
+                  <input
+                    type="text"
+                    id="warna"
+                    name="warna"
+                    class="form-control-custom"
+                    placeholder="Contoh: Coklat, berbintik putih" />
                 </div>
               </div>
 
               <p class="form-section-title" style="margin-top: 28px">
-                Fasilitas &amp; Keterangan
+                Penempatan
               </p>
               <div
                 style="
@@ -219,52 +220,55 @@
                   gap: 16px;
                 ">
                 <div>
-                  <label class="form-label" for="luasKandang"
-                    >Luas Kandang (m²)</label
+                  <label class="form-label" for="idKandang"
+                    >Kandang <span style="color: #e05252">*</span></label
                   >
-                  <input
-                    type="number"
-                    id="luasKandang"
-                    name="luas"
+                  <select
+                    id="idKandang"
+                    name="id_kandang"
                     class="form-control-custom"
-                    placeholder="Contoh: 250"
-                    min="0" />
+                    required>
+                    <option value="" disabled selected>Pilih kandang</option>
+                    <option value="KDG-01">KDG-01 (Sapi Perah A)</option>
+                    <option value="KDG-02">KDG-02 (Sapi Potong B)</option>
+                    <option value="KDG-03">KDG-03 (Kambing & Domba)</option>
+                  </select>
                 </div>
                 <div>
-                  <label class="form-label" for="fasilitas"
-                    >Fasilitas Tersedia</label
+                  <label class="form-label" for="statusKesehatan"
+                    >Status Kesehatan Awal</label
                   >
-                  <input
-                    type="text"
-                    id="fasilitas"
-                    name="fasilitas"
-                    class="form-control-custom"
-                    placeholder="Contoh: Tempat minum otomatis, ventilasi" />
+                  <select
+                    id="statusKesehatan"
+                    name="status_kesehatan"
+                    class="form-control-custom">
+                    <option value="sehat" selected>Sehat</option>
+                    <option value="observasi">Observasi</option>
+                    <option value="sakit">Sakit</option>
+                  </select>
                 </div>
               </div>
-              <div style="margin-top: 16px">
-                <label class="form-label" for="catatanKandang"
-                  >Catatan Tambahan</label
-                >
-                <textarea
-                  id="catatanKandang"
-                  name="catatan"
-                  class="form-control-custom"
-                  rows="3"
-                  placeholder="Keterangan tambahan mengenai kandang (opsional)..."
-                  style="resize: vertical"></textarea>
-              </div>
+
+              <p class="form-section-title" style="margin-top: 28px">
+                Catatan Tambahan
+              </p>
+              <textarea
+                name="catatan"
+                class="form-control-custom"
+                rows="3"
+                placeholder="Keterangan tambahan (opsional)..."
+                style="resize: vertical"></textarea>
 
               <div class="form-actions">
                 <button type="submit" class="btn-primary-custom">
-                  <i class="bi bi-check-lg"></i> Simpan Kandang
+                  <i class="bi bi-check-lg"></i> Simpan Ternak
                 </button>
                 <button
                   type="submit"
                   name="action"
                   value="save_new"
                   class="btn-secondary-custom">
-                  <i class="bi bi-plus-circle"></i> Simpan &amp; Buat Baru
+                  <i class="bi bi-plus-circle"></i> Simpan & Buat Baru
                 </button>
                 <a href="index.html" class="btn-secondary-custom"
                   ><i class="bi bi-x-lg"></i> Batal</a
