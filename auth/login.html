@@ -25,14 +25,22 @@
               Selamat datang kembali! Kami sangat senang menyambut Anda kembali.
             </p>
 
-            <form>
+            <form action="login.php" method="post">
               <div class="mb-3">
                 <label>Nama Lengkap</label>
-                <input type="text" class="form-control" placeholder="" />
+                <input
+                  type="text"
+                  name="nama-lengkap"
+                  class="form-control"
+                  placeholder="" />
               </div>
               <div class="mb-3">
                 <label>Kata Sandi</label>
-                <input type="password" class="form-control" placeholder="" />
+                <input
+                  type="password"
+                  name="kata-sandi"
+                  class="form-control"
+                  placeholder="" />
                 <a href="#" class="forgot-password">Lupa Kata Sandi?</a>
               </div>
 
