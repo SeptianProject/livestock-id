@@ -17,6 +17,10 @@ $selectStmt = $pdo->prepare('SELECT id_kandang, nama_kandang, lokasi, kapasitas 
 $selectStmt->execute(['id_kandang' => $id]);
 $formData = $selectStmt->fetch();
 
+if ($formData) {
+    $formData['kode_kandang'] = 'K' . str_pad((string) $formData['id_kandang'], 2, '0', STR_PAD_LEFT);
+}
+
 if (!$formData) {
     header('Location: index.php?success=Data kandang tidak ditemukan');
     exit;
@@ -30,10 +34,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($formData['nama_kandang'] === '') {
         $errors[] = 'Nama kandang wajib diisi.';
+    } elseif (strlen($formData['nama_kandang']) > 25) {
+        $errors[] = 'Nama kandang maksimal 25 karakter.';
     }
 
     if ($formData['lokasi'] === '') {
         $errors[] = 'Lokasi wajib diisi.';
+    } elseif (strlen($formData['lokasi']) > 25) {
+        $errors[] = 'Lokasi maksimal 25 karakter.';
     }
 
     if (!ctype_digit($formData['kapasitas']) || (int) $formData['kapasitas'] <= 0) {
@@ -118,16 +126,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <p class="form-section-title">Informasi Kandang</p>
                         <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
                             <div>
-                                <label class="form-label" for="id_kandang">ID Kandang</label>
-                                <input type="number" id="id_kandang" class="form-control-custom" value="<?php echo (int) $formData['id_kandang']; ?>" readonly />
+                                <label class="form-label" for="kode_kandang">Kode Kandang</label>
+                                <input type="text" id="kode_kandang" class="form-control-custom" value="<?php echo e($formData['kode_kandang']); ?>" readonly />
                             </div>
                             <div>
                                 <label class="form-label" for="nama_kandang">Nama Kandang</label>
-                                <input type="text" id="nama_kandang" name="nama_kandang" class="form-control-custom" required value="<?php echo e($formData['nama_kandang']); ?>" />
+                                <input type="text" id="nama_kandang" name="nama_kandang" class="form-control-custom" maxlength="25" required value="<?php echo e($formData['nama_kandang']); ?>" />
                             </div>
                             <div>
                                 <label class="form-label" for="lokasi">Lokasi</label>
-                                <input type="text" id="lokasi" name="lokasi" class="form-control-custom" required value="<?php echo e($formData['lokasi']); ?>" />
+                                <input type="text" id="lokasi" name="lokasi" class="form-control-custom" maxlength="25" required value="<?php echo e($formData['lokasi']); ?>" />
                             </div>
                             <div>
                                 <label class="form-label" for="kapasitas">Kapasitas</label>

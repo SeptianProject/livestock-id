@@ -26,12 +26,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $successMessage = trim((string) ($_GET['success'] ?? ''));
 $q = trim((string) ($_GET['q'] ?? ''));
 
-$sql = 'SELECT id_kandang, nama_kandang, lokasi, kapasitas FROM tb_kandang';
+$sql = "SELECT id_kandang, CONCAT('K', LPAD(id_kandang, 2, '0')) AS kode_kandang, nama_kandang, lokasi, kapasitas FROM tb_kandang";
 $conditions = [];
 $params = [];
 
 if ($q !== '') {
-    $conditions[] = '(CAST(id_kandang AS CHAR) LIKE :q OR nama_kandang LIKE :q OR lokasi LIKE :q)';
+    $conditions[] = "(CAST(id_kandang AS CHAR) LIKE :q OR CONCAT('K', LPAD(id_kandang, 2, '0')) LIKE :q OR nama_kandang LIKE :q OR lokasi LIKE :q)";
     $params['q'] = '%' . $q . '%';
 }
 
@@ -137,7 +137,7 @@ $totalKandang = (int) $totalStmt->fetchColumn();
                     <form method="GET" class="table-toolbar">
                         <div class="search-box">
                             <i class="bi bi-search"></i>
-                            <input type="text" name="q" value="<?php echo e($q); ?>" placeholder="Cari ID, nama, atau lokasi kandang..." />
+                            <input type="text" name="q" value="<?php echo e($q); ?>" placeholder="Cari kode (K01), nama, atau lokasi kandang..." />
                         </div>
                         <button type="submit" class="btn-secondary-custom">Filter</button>
                     </form>
@@ -146,7 +146,7 @@ $totalKandang = (int) $totalStmt->fetchColumn();
                         <table class="data-table">
                             <thead>
                                 <tr>
-                                    <th>ID Kandang</th>
+                                    <th>Kode Kandang</th>
                                     <th>Nama Kandang</th>
                                     <th>Lokasi</th>
                                     <th>Kapasitas</th>
@@ -162,7 +162,7 @@ $totalKandang = (int) $totalStmt->fetchColumn();
 
                                 <?php foreach ($kandangList as $kandang): ?>
                                     <tr>
-                                        <td><strong><?php echo (int) $kandang['id_kandang']; ?></strong></td>
+                                        <td><strong><?php echo e($kandang['kode_kandang']); ?></strong></td>
                                         <td><?php echo e($kandang['nama_kandang']); ?></td>
                                         <td><?php echo e($kandang['lokasi']); ?></td>
                                         <td><?php echo (int) $kandang['kapasitas']; ?> ekor</td>
