@@ -5,27 +5,21 @@ declare(strict_types=1);
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../config/helpers.php';
 
-$id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-if (!$id) {
-    header('Location: index.php?success=ID data tidak valid');
-    exit;
-}
-
 $errors = [];
-
-$selectStmt = $pdo->prepare('SELECT id_kandang, nama_kandang, lokasi, kapasitas FROM tb_kandang WHERE id_kandang = :id_kandang');
-$selectStmt->execute(['id_kandang' => $id]);
-$formData = $selectStmt->fetch();
-
-if (!$formData) {
-    header('Location: index.php?success=Data kandang tidak ditemukan');
-    exit;
-}
+$formData = [
+    'id_kandang' => '',
+    'nama_kandang' => '',
+    'lokasi' => '',
+    'kapasitas' => '',
+];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $fields = ['nama_kandang', 'lokasi', 'kapasitas'];
-    foreach ($fields as $field) {
-        $formData[$field] = trim((string) ($_POST[$field] ?? ''));
+    foreach ($formData as $key => $defaultValue) {
+        $formData[$key] = trim((string) ($_POST[$key] ?? $defaultValue));
+    }
+
+    if (!ctype_digit($formData['id_kandang']) || (int) $formData['id_kandang'] <= 0) {
+        $errors[] = 'ID kandang harus berupa angka lebih dari 0.';
     }
 
     if ($formData['nama_kandang'] === '') {
@@ -42,25 +36,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($errors === []) {
         try {
-            $updateStmt = $pdo->prepare(
-                'UPDATE tb_kandang
-                 SET nama_kandang = :nama_kandang,
-                     lokasi = :lokasi,
-                     kapasitas = :kapasitas
-                 WHERE id_kandang = :id_kandang'
+            $insertStmt = $pdo->prepare(
+                'INSERT INTO tb_kandang (id_kandang, nama_kandang, lokasi, kapasitas)
+                 VALUES (:id_kandang, :nama_kandang, :lokasi, :kapasitas)'
             );
 
-            $updateStmt->execute([
-                'id_kandang' => $id,
+            $insertStmt->execute([
+                'id_kandang' => (int) $formData['id_kandang'],
                 'nama_kandang' => $formData['nama_kandang'],
                 'lokasi' => $formData['lokasi'],
                 'kapasitas' => (int) $formData['kapasitas'],
             ]);
 
-            header('Location: index.php?success=Data kandang berhasil diperbarui');
+            header('Location: index.php?success=Data kandang berhasil ditambahkan');
             exit;
         } catch (Throwable $exception) {
-            $errors[] = 'Gagal memperbarui data: ' . $exception->getMessage();
+            $errors[] = 'Gagal menyimpan data: ' . $exception->getMessage();
         }
     }
 }
@@ -71,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Edit Kandang - LivestockID</title>
+    <title>Tambah Kandang - LivestockID</title>
     <link rel="stylesheet" href="../style.css" />
 </head>
 
@@ -96,13 +87,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="main-area">
             <header class="topbar">
                 <button class="sidebar-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')"><i class="bi bi-list"></i></button>
-                <span class="topbar-title">Edit Kandang</span>
+                <span class="topbar-title">Tambah Kandang</span>
             </header>
 
             <main class="page-content">
                 <div class="page-header">
-                    <h1>Edit Data Kandang</h1>
-                    <p>Perbarui data kandang sesuai kondisi terbaru.</p>
+                    <h1>Tambah Kandang Baru</h1>
+                    <p>Isi data kandang untuk menambahkan record baru.</p>
                 </div>
 
                 <?php if ($errors !== []): ?>
@@ -119,7 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
                             <div>
                                 <label class="form-label" for="id_kandang">ID Kandang</label>
-                                <input type="number" id="id_kandang" class="form-control-custom" value="<?php echo (int) $formData['id_kandang']; ?>" readonly />
+                                <input type="number" id="id_kandang" name="id_kandang" class="form-control-custom" min="1" required value="<?php echo e($formData['id_kandang']); ?>" />
                             </div>
                             <div>
                                 <label class="form-label" for="nama_kandang">Nama Kandang</label>
@@ -131,12 +122,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             </div>
                             <div>
                                 <label class="form-label" for="kapasitas">Kapasitas</label>
-                                <input type="number" id="kapasitas" name="kapasitas" min="1" class="form-control-custom" required value="<?php echo e((string) $formData['kapasitas']); ?>" />
+                                <input type="number" id="kapasitas" name="kapasitas" min="1" class="form-control-custom" required value="<?php echo e($formData['kapasitas']); ?>" />
                             </div>
                         </div>
 
                         <div class="form-actions">
-                            <button type="submit" class="btn-primary-custom"><i class="bi bi-check-lg"></i> Update</button>
+                            <button type="submit" class="btn-primary-custom"><i class="bi bi-check-lg"></i> Simpan</button>
                             <a href="index.php" class="btn-secondary-custom"><i class="bi bi-x-lg"></i> Batal</a>
                         </div>
                     </div>

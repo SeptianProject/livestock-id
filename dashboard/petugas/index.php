@@ -20,16 +20,16 @@
                 <p class="nav-section-label">Menu Utama</p>
                 <ul style="list-style: none; padding: 0; margin: 0">
                     <li class="nav-item">
-                        <a href="../index.html" class="nav-link-item"><i class="bi bi-speedometer2"></i><span>Overview</span></a>
+                        <a href="../index.php" class="nav-link-item"><i class="bi bi-speedometer2"></i><span>Overview</span></a>
                     </li>
                     <li class="nav-item">
-                        <a href="../ternak/index.html" class="nav-link-item"><i class="bi bi-box-seam"></i><span>Ternak</span></a>
+                        <a href="../ternak/index.php" class="nav-link-item"><i class="bi bi-box-seam"></i><span>Ternak</span></a>
                     </li>
                     <li class="nav-item">
-                        <a href="../kandang/index.html" class="nav-link-item"><i class="bi bi-house-door"></i><span>Kandang</span></a>
+                        <a href="../kandang/index.php" class="nav-link-item"><i class="bi bi-house-door"></i><span>Kandang</span></a>
                     </li>
                     <li class="nav-item">
-                        <a href="index.html" class="nav-link-item active"><i class="bi bi-people"></i><span>Petugas</span></a>
+                        <a href="index.php" class="nav-link-item active"><i class="bi bi-people"></i><span>Petugas</span></a>
                     </li>
                 </ul>
                 <p class="nav-section-label">Pencatatan</p>
@@ -63,7 +63,7 @@
                         <i class="bi bi-bell"></i><span class="notif-badge"></span>
                     </div>
                     <a
-                        href="../profile/index.html"
+                        href="../profile/index.php"
                         style="
                 display: flex;
                 align-items: center;
@@ -86,7 +86,7 @@
                             Total 18 petugas terdaftar
                         </p>
                     </div>
-                    <a href="create.html" class="btn-primary-custom"><i class="bi bi-plus-lg"></i> Tambah Petugas</a>
+                    <a href="create.php" class="btn-primary-custom"><i class="bi bi-plus-lg"></i> Tambah Petugas</a>
                 </div>
 
                 <div class="card-panel" style="margin-bottom: 0">

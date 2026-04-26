@@ -18,22 +18,22 @@
           <p class="nav-section-label">Menu Utama</p>
           <ul style="list-style: none; padding: 0; margin: 0">
             <li class="nav-item">
-              <a href="../index.html" class="nav-link-item"
+              <a href="../index.php" class="nav-link-item"
                 ><i class="bi bi-speedometer2"></i><span>Overview</span></a
               >
             </li>
             <li class="nav-item">
-              <a href="../ternak/index.html" class="nav-link-item"
+              <a href="../ternak/index.php" class="nav-link-item"
                 ><i class="bi bi-box-seam"></i><span>Ternak</span></a
               >
             </li>
             <li class="nav-item">
-              <a href="../kandang/index.html" class="nav-link-item"
+              <a href="../kandang/index.php" class="nav-link-item"
                 ><i class="bi bi-house-door"></i><span>Kandang</span></a
               >
             </li>
             <li class="nav-item">
-              <a href="index.html" class="nav-link-item active"
+              <a href="index.php" class="nav-link-item active"
                 ><i class="bi bi-people"></i><span>Petugas</span></a
               >
             </li>
@@ -73,7 +73,7 @@
           </button>
           <div style="display: flex; align-items: center; gap: 8px; flex: 1">
             <a
-              href="index.html"
+              href="index.php"
               style="
                 color: #7c8493;
                 font-size: 13px;
@@ -95,7 +95,7 @@
               <i class="bi bi-bell"></i><span class="notif-badge"></span>
             </div>
             <a
-              href="../profile/index.html"
+              href="../profile/index.php"
               style="
                 display: flex;
                 align-items: center;
@@ -263,7 +263,7 @@
                   class="btn-secondary-custom">
                   <i class="bi bi-plus-circle"></i> Simpan &amp; Buat Baru
                 </button>
-                <a href="index.html" class="btn-secondary-custom"
+                <a href="index.php" class="btn-secondary-custom"
                   ><i class="bi bi-x-lg"></i> Batal</a
                 >
               </div>
