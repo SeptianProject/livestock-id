@@ -18,7 +18,7 @@ body {
 .brand-logo {
   font-weight: 600;
   font-size: 24px;
-  color: #5cb85c;
+  color: #fface9;
   margin-bottom: 30px;
   display: flex;
   align-items: center;
@@ -44,7 +44,7 @@ h2 {
   background: #fdfdfd;
 }
 .btn-masuk {
-  background-color: #69b35a;
+  background-color: #ffa3dc;
   color: white;
   border: none;
   height: 45px;
@@ -54,7 +54,7 @@ h2 {
   margin-top: 20px;
 }
 .btn-masuk:hover {
-  background-color: #56944a;
+  background-color: #b4f7ff;
   color: white;
 }
 .btn-google {
