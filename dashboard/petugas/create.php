@@ -13,7 +13,6 @@ $formData = [
   'no_telp' => '',
 ];
 
-$params = [];
 $jabatans = [];
 
 try {
@@ -21,7 +20,8 @@ try {
   $jabatans = $jabatanStmt->fetchAll();
 } catch (Throwable $exception) {
   http_response_code(500);
-  echo 'Gagal memuat data jabatan: ' . htmlspecialchars($exception->getMessage(), ENT_QUOTES, 'UTF-8');
+  error_log('Gagal memuat data jabatan: ' . $exception->getMessage());
+  echo 'Gagal memuat data jabatan. Silakan coba lagi nanti.';
   exit;
 }
 
@@ -44,8 +44,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   if ($formData['no_telp'] === '') {
     $errors[] = 'Nomor telepon wajib diisi.';
-  } elseif (!preg_match('/^0\d{9,12}$/', $formData['no_telp'])) {
-    $errors[] = 'Nomor telepon tidak valid.';
   }
 
 
@@ -74,7 +72,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
       }
     } catch (Throwable $exception) {
-      $errors[] = 'Gagal menyimpan data: ' . $exception->getMessage();
+      error_log('Gagal menyimpan data petugas: ' . $exception->getMessage());
+      $errors[] = 'Gagal menyimpan data. Silakan coba lagi.';
     }
   }
 }
@@ -183,6 +182,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           </p>
         </div>
 
+        <?php if ($errors !== []): ?>
+          <div class="card-panel" style="border-left: 4px solid #e05252; margin-bottom: 16px;">
+            <p style="margin: 0 0 8px; font-weight: 600; color: #9f1f1f;">Terjadi kesalahan:</p>
+            <ul style="margin: 0; padding-left: 20px; color: #6b2121;">
+              <?php foreach ($errors as $error): ?>
+                <li><?php echo e($error); ?></li>
+              <?php endforeach; ?>
+            </ul>
+          </div>
+        <?php endif; ?>
+
+        <?php if ($successMessage !== ''): ?>
+          <div class="card-panel" style="border-left: 4px solid #2f7d32; margin-bottom: 16px; color: #1f5f24;">
+            <?php echo e($successMessage); ?>
+          </div>
+        <?php endif; ?>
+
         <form method="POST">
           <div class="form-card">
             <p class="form-section-title">Data Pribadi</p>
@@ -202,19 +218,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                   placeholder="Masukkan nama petugas"
                   maxlength="100"
                   required
-                  value="<?php echo e($formData['nama_petugas']); ?>"
-                  required />
+                  value="<?php echo e($formData['nama_petugas']); ?>" />
               </div>
               <div>
-                <label class="form-label" for="jabatan">Jabatan <span style="color: #e05252">*</span></label>
+                <label class="form-label" for="id_jabatan">Jabatan <span style="color: #e05252">*</span></label>
                 <select
-                  id="jabatan"
-                  name="jabatan"
+                  id="id_jabatan"
+                  name="id_jabatan"
                   class="form-control-custom"
                   required>
-                  <option value="" disabled selected>Pilih jabatan</option>
-                  <?php foreach ($jabatans as $index => $jabatan): ?>
-                    <option value="">
+                  <option value="" disabled <?php echo e($formData['id_jabatan'] === '' ? 'selected' : ''); ?>>Pilih jabatan</option>
+                  <?php foreach ($jabatans as $jabatan):  ?>
+                    <option value="<?php echo e((string) $jabatan['id_jabatan']); ?>" <?php echo e($formData['id_jabatan'] === (string) $jabatan['id_jabatan'] ? 'selected' : ''); ?>>
                       <?php echo e($jabatan['nama_jabatan']); ?>
                     </option>
                   <?php endforeach; ?>
@@ -224,7 +239,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               <div>
                 <label class="form-label" for="no_telp">No. Telepon <span style="color: #e05252">*</span></label>
                 <input
-                  type="text"
+                  type="tel"
                   id="no_telp"
                   name="no_telp"
                   class="form-control-custom"
