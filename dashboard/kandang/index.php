@@ -39,8 +39,6 @@ if ($conditions !== []) {
     $sql .= ' WHERE ' . implode(' AND ', $conditions);
 }
 
-$sql .= ' ORDER BY id_kandang DESC';
-
 $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $kandangList = $stmt->fetchAll();
