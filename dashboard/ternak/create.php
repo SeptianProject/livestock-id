@@ -1,3 +1,74 @@
+<?php
+
+declare(strict_types=1);
+
+require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../../config/helpers.php';
+
+$errors = [];
+$successMessage = '';
+$formData = [
+    'id_jenis_ternak' => '',
+    'tgl_lahir' => '',
+    'jenis_kelamin' => '',
+    'id_kandang' => '',
+];
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $action = trim((string) ($_POST['action'] ?? 'save'));
+
+    foreach ($formData as $key => $defaultValue) {
+        $formData[$key] = trim((string) ($_POST[$key] ?? $defaultValue));
+    }
+
+    if (!ctype_digit($formData['id_jenis_ternak'])) {
+        $errors[] = 'Jenis ternak harus berupa angka.';
+    }
+
+    if ($formData['tgl_lahir'] === '') {
+        $errors[] = 'Tanggal lahir wajib diisi.';
+    }
+
+    if (!in_array($formData['jenis_kelamin'], ['jantan', 'betina'])) {
+        $errors[] = 'Jenis kelamin harus jantan atau betina.';
+    }
+
+    if (!ctype_digit($formData['id_kandang'])) {
+        $errors[] = 'ID kandang harus berupa angka.';
+    }
+  
+    if ($errors === []) {
+        try {
+            $insertStmt = $pdo->prepare(
+                'INSERT INTO tb_ternak (id_jenis_ternak, tgl_lahir, jenis_kelamin, id_kandang)
+                 VALUES (:id_jenis_ternak, :tgl_lahir, :jenis_kelamin, :id_kandang)'
+            );
+
+            $insertStmt->execute([
+                'id_jenis_ternak' => (int) $formData['id_jenis_ternak'],
+                'tgl_lahir' => $formData['tgl_lahir'],
+                'jenis_kelamin' => $formData['jenis_kelamin'],
+                'id_kandang' => (int) $formData['id_kandang'],
+            ]);
+
+            if ($action === 'save_new') {
+                $successMessage = 'Data ternak berhasil disimpan. Silakan tambah data baru.';
+                $formData = [
+                    'id_jenis_ternak' => '',
+                    'tgl_lahir' => '',
+                    'jenis_kelamin' => '',
+                    'id_kandang' => '',
+                ];
+            } else {
+                header('Location: index.php?success=Data ternak berhasil ditambahkan');
+                exit;
+            }
+        } catch (Throwable $exception) {
+            $errors[] = 'Gagal menyimpan data: ' . $exception->getMessage();
+        }
+    }
+}
+?>
 <!doctype html>
 <html lang="id">
 
@@ -100,7 +171,7 @@
           </p>
         </div>
 
-        <form action="insert.php" method="POST">
+        <form method="POST">
           <div class="form-card">
             <p class="form-section-title">Informasi Dasar</p>
             <div

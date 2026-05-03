@@ -1,3 +1,65 @@
+<?php
+
+declare(strict_types=1);
+
+require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../../config/helpers.php';
+
+$successMessage = '';
+$errorMessage = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $deleteId = filter_input(INPUT_POST, 'delete_id', FILTER_VALIDATE_INT);
+
+    if ($deleteId) {
+        try {
+            $deleteStmt = $pdo->prepare('DELETE FROM tb_ternak WHERE id_ternak = :id_ternak');
+            $deleteStmt->execute(['id_ternak' => $deleteId]);
+
+            header('Location: index.php?success=Data ternak berhasil dihapus');
+            exit;
+        } catch (Throwable $exception) {
+            $errorMessage = 'Gagal menghapus data: ' . $exception->getMessage();
+        }
+    }
+}
+
+$successMessage = trim((string) ($_GET['success'] ?? ''));
+$q = trim((string) ($_GET['q'] ?? ''));
+
+$sql = "SELECT 
+            id_ternak,
+            CONCAT('T', LPAD(id_ternak, 3, '0')) AS kode_ternak,
+            id_jenis_ternak,
+            tgl_lahir,
+            jenis_kelamin,
+            id_kandang
+        FROM tb_ternak";
+
+$conditions = [];
+$params = [];
+
+if ($q !== '') {
+    $conditions[] = "(
+        CAST(id_ternak AS CHAR) LIKE :q OR 
+        CONCAT('T', LPAD(id_ternak, 3, '0')) LIKE :q OR 
+        jenis_kelamin LIKE :q OR 
+        tgl_lahir LIKE :q
+    )";
+    $params['q'] = '%' . $q . '%';
+}
+
+if ($conditions !== []) {
+    $sql .= ' WHERE ' . implode(' AND ', $conditions);
+}
+
+$stmt = $pdo->prepare($sql);
+$stmt->execute($params);
+$ternakList = $stmt->fetchAll();
+
+$totalStmt = $pdo->query('SELECT COUNT(*) FROM tb_ternak');
+$totalTernak = (int) $totalStmt->fetchColumn();
+?>
 <!doctype html>
 <html lang="id">
 
