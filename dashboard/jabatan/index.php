@@ -14,13 +14,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($deleteId) {
         try {
-            $deleteStmt = $pdo->prepare(
-                'DELETE FROM tb_petugas WHERE id_petugas = :id_petugas'
-            );
-            $deleteStmt->execute(['id_petugas' => $deleteId]);
+            // Check if jabatan is used in tb_petugas
+            $checkStmt = $pdo->prepare('SELECT COUNT(*) FROM tb_petugas WHERE id_jabatan = :id_jabatan');
+            $checkStmt->execute(['id_jabatan' => $deleteId]);
+            $count = (int) $checkStmt->fetchColumn();
 
-            header('Location: index.php?success=Data petugas berhasil dihapus');
-            exit;
+            if ($count > 0) {
+                $errorMessage = 'Tidak bisa menghapus jabatan karena masih digunakan oleh ' . $count . ' petugas.';
+            } else {
+                $deleteStmt = $pdo->prepare(
+                    'DELETE FROM tb_jabatan WHERE id_jabatan = :id_jabatan'
+                );
+                $deleteStmt->execute(['id_jabatan' => $deleteId]);
+
+                header('Location: index.php?success=Data jabatan berhasil dihapus');
+                exit;
+            }
         } catch (Throwable $exception) {
             $errorMessage = 'Gagal menghapus data: ' . $exception->getMessage();
         }
@@ -33,11 +42,9 @@ $q = trim((string) ($_GET['q'] ?? ''));
 
 // QUERY
 $sql = "SELECT 
-            id_petugas,
-            nama_petugas,
             id_jabatan,
-            no_telp
-        FROM tb_petugas";
+            nama_jabatan
+        FROM tb_jabatan";
 
 $conditions = [];
 $params = [];
@@ -45,9 +52,8 @@ $params = [];
 // SEARCH
 if ($q !== '') {
     $conditions[] = "(
-        CAST(id_petugas AS CHAR) LIKE :q OR 
-        nama_petugas LIKE :q OR 
-        no_telp LIKE :q
+        CAST(id_jabatan AS CHAR) LIKE :q OR 
+        nama_jabatan LIKE :q
     )";
     $params['q'] = '%' . $q . '%';
 }
@@ -58,16 +64,16 @@ if (!empty($conditions)) {
 }
 
 // ORDER
-$sql .= ' ORDER BY id_petugas DESC';
+$sql .= ' ORDER BY id_jabatan ASC';
 
 // EXECUTE
 $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
-$petugasList = $stmt->fetchAll();
+$jabatanList = $stmt->fetchAll();
 
 // TOTAL
-$totalStmt = $pdo->query('SELECT COUNT(*) FROM tb_petugas');
-$totalPetugas = (int) $totalStmt->fetchColumn();
+$totalStmt = $pdo->query('SELECT COUNT(*) FROM tb_jabatan');
+$totalJabatan = (int) $totalStmt->fetchColumn();
 ?>
 <!doctype html>
 <html lang="id">
@@ -75,7 +81,7 @@ $totalPetugas = (int) $totalStmt->fetchColumn();
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Petugas — LivestockID</title>
+    <title>Jabatan — LivestockID</title>
     <link rel="stylesheet" href="../style.css" />
 </head>
 
@@ -100,13 +106,13 @@ $totalPetugas = (int) $totalStmt->fetchColumn();
                         <a href="../kandang/index.php" class="nav-link-item"><i class="bi bi-house-door"></i><span>Kandang</span></a>
                     </li>
                     <li class="nav-item">
-                        <a href="index.php" class="nav-link-item active"><i class="bi bi-people"></i><span>Petugas</span></a>
+                        <a href="../petugas/index.php" class="nav-link-item"><i class="bi bi-people"></i><span>Petugas</span></a>
                     </li>
                 </ul>
                 <p class="nav-section-label">Pengaturan</p>
                 <ul style="list-style: none; padding: 0; margin: 0">
                     <li class="nav-item">
-                        <a href="../jabatan/index.php" class="nav-link-item"><i class="bi bi-briefcase"></i><span>Jabatan</span></a>
+                        <a href="index.php" class="nav-link-item active"><i class="bi bi-briefcase"></i><span>Jabatan</span></a>
                     </li>
                 </ul>
                 <p class="nav-section-label">Pencatatan</p>
@@ -134,7 +140,7 @@ $totalPetugas = (int) $totalStmt->fetchColumn();
             ">
                     <i class="bi bi-list"></i>
                 </button>
-                <span class="topbar-title">Petugas</span>
+                <span class="topbar-title">Jabatan</span>
                 <div class="topbar-actions">
                     <div class="topbar-notif">
                         <i class="bi bi-bell"></i><span class="notif-badge"></span>
@@ -158,12 +164,12 @@ $totalPetugas = (int) $totalStmt->fetchColumn();
             <main class="page-content">
                 <div class="list-header">
                     <div>
-                        <h2>Daftar Petugas</h2>
+                        <h2>Daftar Jabatan</h2>
                         <p style="margin: 4px 0 0; font-size: 13px; color: #7c8493">
-                            Total <?php echo e((string) $totalPetugas); ?> petugas terdaftar
+                            Total <?php echo e((string) $totalJabatan); ?> jabatan terdaftar
                         </p>
                     </div>
-                    <a href="create.php" class="btn-primary-custom"><i class="bi bi-plus-lg"></i> Tambah Petugas</a>
+                    <a href="create.php" class="btn-primary-custom"><i class="bi bi-plus-lg"></i> Tambah Jabatan</a>
                 </div>
 
                 <?php if ($successMessage !== ''): ?>
@@ -185,7 +191,7 @@ $totalPetugas = (int) $totalStmt->fetchColumn();
                             <i class="bi bi-search"></i>
                             <input
                                 type="text"
-                                placeholder="Cari nama atau nomor telepon petugas..."
+                                placeholder="Cari nama jabatan..."
                                 id="searchInput" />
                         </div>
                     </div>
@@ -194,69 +200,54 @@ $totalPetugas = (int) $totalStmt->fetchColumn();
                         <table class="data-table">
                             <thead>
                                 <tr>
-                                    <th>Petugas</th>
                                     <th>Jabatan</th>
-                                    <th>No. Telepon</th>
+                                    <th>Jumlah Petugas</th>
                                     <th style="text-align: center">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php if (empty($petugasList)): ?>
+                                <?php if (empty($jabatanList)): ?>
                                     <tr>
-                                        <td colspan="4" style="text-align: center; padding: 24px; color: #7c8493;">
-                                            Tidak ada data petugas.
+                                        <td colspan="3" style="text-align: center; padding: 24px; color: #7c8493;">
+                                            Tidak ada data jabatan.
                                         </td>
                                     </tr>
                                 <?php else: ?>
-                                    <?php foreach ($petugasList as $item): ?>
+                                    <?php foreach ($jabatanList as $item): ?>
+                                        <?php
+                                        // Count petugas dengan jabatan ini
+                                        $countStmt = $pdo->prepare('SELECT COUNT(*) FROM tb_petugas WHERE id_jabatan = :id_jabatan');
+                                        $countStmt->execute(['id_jabatan' => $item['id_jabatan']]);
+                                        $petugasCount = (int) $countStmt->fetchColumn();
+                                        ?>
                                         <tr>
                                             <td>
                                                 <div style="display: flex; align-items: center; gap: 10px">
-                                                    <div class="petugas-avatar" style="width: 34px; height: 34px; font-size: 12px">
-                                                        <?php
-                                                        $initials = '';
-                                                        $nameParts = explode(' ', trim($item['nama_petugas']));
-                                                        foreach ($nameParts as $part) {
-                                                            $initials .= substr($part, 0, 1);
-                                                        }
-                                                        echo e(strtoupper(substr($initials, 0, 2)));
-                                                        ?>
+                                                    <div class="petugas-avatar" style="width: 34px; height: 34px; font-size: 12px; background-color: #e8eef7;">
+                                                        <i class="bi bi-briefcase" style="color: #4f46e5;"></i>
                                                     </div>
                                                     <div>
                                                         <p style="margin: 0; font-size: 13px; font-weight: 600; color: #000005;">
-                                                            <?php echo e($item['nama_petugas']); ?>
+                                                            <?php echo e($item['nama_jabatan']); ?>
                                                         </p>
                                                         <p style="margin: 0; font-size: 11px; color: #7c8493">
-                                                            #PTG-<?php echo e(str_pad((string) $item['id_petugas'], 3, '0', STR_PAD_LEFT)); ?>
+                                                            #JAB-<?php echo e(str_pad((string) $item['id_jabatan'], 3, '0', STR_PAD_LEFT)); ?>
                                                         </p>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td>
-                                                <?php
-                                                // Cari nama jabatan berdasarkan id_jabatan
-                                                $jabatanName = 'N/A';
-                                                try {
-                                                    $jabStmt = $pdo->prepare('SELECT nama_jabatan FROM tb_jabatan WHERE id_jabatan = :id_jabatan');
-                                                    $jabStmt->execute(['id_jabatan' => $item['id_jabatan']]);
-                                                    $jabResult = $jabStmt->fetch();
-                                                    if ($jabResult) {
-                                                        $jabatanName = $jabResult['nama_jabatan'];
-                                                    }
-                                                } catch (Throwable $e) {
-                                                    error_log('Gagal memuat nama jabatan: ' . $e->getMessage());
-                                                }
-                                                echo e($jabatanName);
-                                                ?>
+                                                <span style="background-color: #e8eef7; color: #4f46e5; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600;">
+                                                    <?php echo e((string) $petugasCount); ?> petugas
+                                                </span>
                                             </td>
-                                            <td><?php echo e($item['no_telp']); ?></td>
                                             <td style="text-align: center">
                                                 <div style="display: flex; gap: 6px; justify-content: center;">
-                                                    <a href="update.php?id=<?php echo e((string) $item['id_petugas']); ?>" class="action-btn" title="Edit">
+                                                    <a href="update.php?id=<?php echo e((string) $item['id_jabatan']); ?>" class="action-btn" title="Edit">
                                                         <i class="bi bi-pencil"></i>
                                                     </a>
                                                     <form method="POST" style="display: inline;" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
-                                                        <input type="hidden" name="delete_id" value="<?php echo e((string) $item['id_petugas']); ?>" />
+                                                        <input type="hidden" name="delete_id" value="<?php echo e((string) $item['id_jabatan']); ?>" />
                                                         <button type="submit" class="action-btn danger" title="Hapus">
                                                             <i class="bi bi-trash"></i>
                                                         </button>
@@ -268,9 +259,9 @@ $totalPetugas = (int) $totalStmt->fetchColumn();
                                 <?php endif; ?>
                             </tbody>
                         </table>
-                        <?php if (!empty($petugasList)): ?>
+                        <?php if (!empty($jabatanList)): ?>
                             <div class="table-footer">
-                                <span>Menampilkan <?php echo e((string) count($petugasList)); ?> dari <?php echo e((string) $totalPetugas); ?> data</span>
+                                <span>Menampilkan <?php echo e((string) count($jabatanList)); ?> dari <?php echo e((string) $totalJabatan); ?> data</span>
                             </div>
                         <?php endif; ?>
                     </div>

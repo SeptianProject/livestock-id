@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   if ($formData['nama_petugas'] === '') {
     $errors[] = 'Nama petugas wajib diisi.';
-  } elseif (strlen($formData['nama_petugas']) > 100) {
+  } elseif ((function_exists('mb_strlen') ? mb_strlen($formData['nama_petugas'], 'UTF-8') : strlen($formData['nama_petugas'])) > 100) {
     $errors[] = 'Nama petugas maksimal 100 karakter.';
   }
 
@@ -44,6 +44,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   if ($formData['no_telp'] === '') {
     $errors[] = 'Nomor telepon wajib diisi.';
+  } elseif ((function_exists('mb_strlen') ? mb_strlen($formData['no_telp'], 'UTF-8') : strlen($formData['no_telp'])) > 20) {
+    $errors[] = 'Nomor telepon maksimal 20 karakter.';
   }
 
 
@@ -73,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       }
     } catch (Throwable $exception) {
       error_log('Gagal menyimpan data petugas: ' . $exception->getMessage());
-      $errors[] = 'Gagal menyimpan data. Silakan coba lagi.';
+      $errors[] = 'Gagal menyimpan data petugas. Pastikan nama petugas maksimal 100 karakter, nomor telepon maksimal 20 karakter, dan jabatan dipilih dengan benar.';
     }
   }
 }
@@ -112,6 +114,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           </li>
           <li class="nav-item">
             <a href="index.php" class="nav-link-item active"><i class="bi bi-people"></i><span>Petugas</span></a>
+          </li>
+        </ul>
+        <p class="nav-section-label">Pengaturan</p>
+        <ul style="list-style: none; padding: 0; margin: 0">
+          <li class="nav-item">
+            <a href="../jabatan/index.php" class="nav-link-item"><i class="bi bi-briefcase"></i><span>Jabatan</span></a>
           </li>
         </ul>
         <p class="nav-section-label">Pencatatan</p>
@@ -244,6 +252,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                   name="no_telp"
                   class="form-control-custom"
                   placeholder="Contoh: +62 812-3456-7890"
+                  maxlength="20"
                   required
                   value="<?php echo e($formData['no_telp']); ?>" />
               </div>

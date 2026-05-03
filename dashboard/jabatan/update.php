@@ -7,23 +7,23 @@ require_once __DIR__ . '/../../config/helpers.php';
 
 $errors = [];
 $successMessage = '';
-$petugas = null;
-$jabatans = [];
+$jabatan = null;
 
 // Get ID dari URL
-$petugas_id = (int) ($_GET['id'] ?? 0);
+$jabatan_id = (int) ($_GET['id'] ?? 0);
 
-if ($petugas_id <= 0) {
+if ($jabatan_id <= 0) {
     http_response_code(404);
-    error_log('ID petugas tidak valid');
-    echo 'ID petugas tidak ditemukan.';
+    error_log('ID jabatan tidak valid');
+    echo 'ID jabatan tidak ditemukan.';
     exit;
 }
 
 // Load data jabatan
 try {
-    $jabatanStmt = $pdo->query('SELECT * FROM tb_jabatan ORDER BY nama_jabatan ASC');
-    $jabatans = $jabatanStmt->fetchAll();
+    $jabatanStmt = $pdo->prepare('SELECT * FROM tb_jabatan WHERE id_jabatan = :id_jabatan');
+    $jabatanStmt->execute(['id_jabatan' => $jabatan_id]);
+    $jabatan = $jabatanStmt->fetch();
 } catch (Throwable $exception) {
     http_response_code(500);
     error_log('Gagal memuat data jabatan: ' . $exception->getMessage());
@@ -31,74 +31,62 @@ try {
     exit;
 }
 
-// Load data petugas
-try {
-    $petugasStmt = $pdo->prepare('SELECT * FROM tb_petugas WHERE id_petugas = :id_petugas');
-    $petugasStmt->execute(['id_petugas' => $petugas_id]);
-    $petugas = $petugasStmt->fetch();
-} catch (Throwable $exception) {
-    http_response_code(500);
-    error_log('Gagal memuat data petugas: ' . $exception->getMessage());
-    echo 'Gagal memuat data petugas. Silakan coba lagi nanti.';
-    exit;
-}
-
-if (!$petugas) {
+if (!$jabatan) {
     http_response_code(404);
-    error_log('Petugas dengan ID ' . $petugas_id . ' tidak ditemukan');
-    echo 'Petugas tidak ditemukan.';
+    error_log('Jabatan dengan ID ' . $jabatan_id . ' tidak ditemukan');
+    echo 'Jabatan tidak ditemukan.';
     exit;
 }
 
 $formData = [
-    'nama_petugas' => $petugas['nama_petugas'] ?? '',
-    'id_jabatan' => (string) ($petugas['id_jabatan'] ?? ''),
-    'no_telp' => $petugas['no_telp'] ?? '',
+    'nama_jabatan' => $jabatan['nama_jabatan'] ?? '',
 ];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $action = trim((string) ($_POST['action'] ?? 'save'));
-
     foreach ($formData as $key => $defaultValue) {
         $formData[$key] = trim((string) ($_POST[$key] ?? $defaultValue));
     }
 
-    if ($formData['nama_petugas'] === '') {
-        $errors[] = 'Nama petugas wajib diisi.';
-    } elseif ((function_exists('mb_strlen') ? mb_strlen($formData['nama_petugas'], 'UTF-8') : strlen($formData['nama_petugas'])) > 100) {
-        $errors[] = 'Nama petugas maksimal 100 karakter.';
+    if ($formData['nama_jabatan'] === '') {
+        $errors[] = 'Nama jabatan wajib diisi.';
+    } elseif ((function_exists('mb_strlen') ? mb_strlen($formData['nama_jabatan'], 'UTF-8') : strlen($formData['nama_jabatan'])) > 25) {
+        $errors[] = 'Nama jabatan maksimal 25 karakter.';
     }
 
-    if ($formData['id_jabatan'] === '') {
-        $errors[] = 'Jabatan wajib diisi.';
-    }
+    // Check duplicate (excluding current jabatan)
+    if ($errors === []) {
+        try {
+            $checkStmt = $pdo->prepare('SELECT COUNT(*) FROM tb_jabatan WHERE LOWER(nama_jabatan) = LOWER(:nama_jabatan) AND id_jabatan != :id_jabatan');
+            $checkStmt->execute(['nama_jabatan' => $formData['nama_jabatan'], 'id_jabatan' => $jabatan_id]);
+            $count = (int) $checkStmt->fetchColumn();
 
-    if ($formData['no_telp'] === '') {
-        $errors[] = 'Nomor telepon wajib diisi.';
-    } elseif ((function_exists('mb_strlen') ? mb_strlen($formData['no_telp'], 'UTF-8') : strlen($formData['no_telp'])) > 20) {
-        $errors[] = 'Nomor telepon maksimal 20 karakter.';
+            if ($count > 0) {
+                $errors[] = 'Nama jabatan sudah terdaftar.';
+            }
+        } catch (Throwable $exception) {
+            error_log('Gagal memeriksa duplikat jabatan: ' . $exception->getMessage());
+            $errors[] = 'Gagal memeriksa data. Silakan coba lagi.';
+        }
     }
 
     if ($errors === []) {
         try {
             $updateStmt = $pdo->prepare(
-                'UPDATE tb_petugas 
-                 SET nama_petugas = :nama_petugas, id_jabatan = :id_jabatan, no_telp = :no_telp 
-                 WHERE id_petugas = :id_petugas'
+                'UPDATE tb_jabatan 
+                 SET nama_jabatan = :nama_jabatan 
+                 WHERE id_jabatan = :id_jabatan'
             );
 
             $updateStmt->execute([
-                'nama_petugas' => $formData['nama_petugas'],
-                'id_jabatan' => $formData['id_jabatan'],
-                'no_telp' => $formData['no_telp'],
-                'id_petugas' => $petugas_id,
+                'nama_jabatan' => $formData['nama_jabatan'],
+                'id_jabatan' => $jabatan_id,
             ]);
 
-            header('Location: index.php?success=Data petugas berhasil diubah');
+            header('Location: index.php?success=Data jabatan berhasil diubah');
             exit;
         } catch (Throwable $exception) {
-            error_log('Gagal memperbarui data petugas: ' . $exception->getMessage());
-            $errors[] = 'Gagal menyimpan data petugas. Pastikan nama petugas maksimal 100 karakter, nomor telepon maksimal 20 karakter, dan jabatan dipilih dengan benar.';
+            error_log('Gagal memperbarui data jabatan: ' . $exception->getMessage());
+            $errors[] = 'Gagal menyimpan data jabatan. Pastikan nama jabatan maksimal 25 karakter dan belum digunakan.';
         }
     }
 }
@@ -111,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Edit Petugas — LivestockID</title>
+    <title>Edit Jabatan — LivestockID</title>
     <link rel="stylesheet" href="../style.css" />
 </head>
 
@@ -136,13 +124,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <a href="../kandang/index.php" class="nav-link-item"><i class="bi bi-house-door"></i><span>Kandang</span></a>
                     </li>
                     <li class="nav-item">
-                        <a href="index.php" class="nav-link-item active"><i class="bi bi-people"></i><span>Petugas</span></a>
+                        <a href="../petugas/index.php" class="nav-link-item"><i class="bi bi-people"></i><span>Petugas</span></a>
                     </li>
                 </ul>
                 <p class="nav-section-label">Pengaturan</p>
                 <ul style="list-style: none; padding: 0; margin: 0">
                     <li class="nav-item">
-                        <a href="../jabatan/index.php" class="nav-link-item"><i class="bi bi-briefcase"></i><span>Jabatan</span></a>
+                        <a href="index.php" class="nav-link-item active"><i class="bi bi-briefcase"></i><span>Jabatan</span></a>
                     </li>
                 </ul>
                 <p class="nav-section-label">Pencatatan</p>
@@ -179,11 +167,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     display: flex;
                     align-items: center;
                     gap: 4px;
-                  "><i class="bi bi-chevron-left"></i> Petugas</a>
+                  "><i class="bi bi-chevron-left"></i> Jabatan</a>
                     <i
                         class="bi bi-chevron-right"
                         style="font-size: 11px; color: #b0b8c4"></i>
-                    <span class="topbar-title" style="font-size: 15px">Edit Petugas</span>
+                    <span class="topbar-title" style="font-size: 15px">Edit Jabatan</span>
                 </div>
                 <div class="topbar-actions">
                     <div class="topbar-notif">
@@ -207,9 +195,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <main class="page-content">
                 <div class="page-header">
-                    <h1>Edit Petugas</h1>
+                    <h1>Edit Jabatan</h1>
                     <p>
-                        Perbarui informasi petugas yang sudah terdaftar di sistem LivestockID.
+                        Perbarui informasi jabatan yang sudah terdaftar di sistem LivestockID.
                     </p>
                 </div>
 
@@ -232,52 +220,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <form method="POST">
                     <div class="form-card">
-                        <p class="form-section-title">Data Pribadi</p>
-                        <div
-                            style="
-                        display: grid;
-                        grid-template-columns: 1fr 1fr;
-                        gap: 16px;
-                      ">
+                        <p class="form-section-title">Informasi Jabatan</p>
+                        <div style="display: grid; grid-template-columns: 1fr; gap: 16px;">
                             <div>
-                                <label class="form-label" for="nama_petugas">Nama Lengkap <span style="color: #e05252">*</span></label>
+                                <label class="form-label" for="nama_jabatan">Nama Jabatan <span style="color: #e05252">*</span></label>
                                 <input
                                     type="text"
-                                    id="nama_petugas"
-                                    name="nama_petugas"
+                                    id="nama_jabatan"
+                                    name="nama_jabatan"
                                     class="form-control-custom"
-                                    placeholder="Masukkan nama petugas"
-                                    maxlength="100"
+                                    placeholder="Contoh: Dokter Hewan"
+                                    maxlength="25"
                                     required
-                                    value="<?php echo e($formData['nama_petugas']); ?>" />
-                            </div>
-                            <div>
-                                <label class="form-label" for="id_jabatan">Jabatan <span style="color: #e05252">*</span></label>
-                                <select
-                                    id="id_jabatan"
-                                    name="id_jabatan"
-                                    class="form-control-custom"
-                                    required>
-                                    <option value="" disabled <?php echo e($formData['id_jabatan'] === '' ? 'selected' : ''); ?>>Pilih jabatan</option>
-                                    <?php foreach ($jabatans as $jabatan): ?>
-                                        <option value="<?php echo e((string) $jabatan['id_jabatan']); ?>" <?php echo e($formData['id_jabatan'] === (string) $jabatan['id_jabatan'] ? 'selected' : ''); ?>>
-                                            <?php echo e($jabatan['nama_jabatan']); ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-
-                            <div>
-                                <label class="form-label" for="no_telp">No. Telepon <span style="color: #e05252">*</span></label>
-                                <input
-                                    type="tel"
-                                    id="no_telp"
-                                    name="no_telp"
-                                    class="form-control-custom"
-                                    placeholder="Contoh: +62 812-3456-7890"
-                                    maxlength="20"
-                                    required
-                                    value="<?php echo e($formData['no_telp']); ?>" />
+                                    value="<?php echo e($formData['nama_jabatan']); ?>" />
+                                <p style="margin: 4px 0 0; font-size: 12px; color: #7c8493;">Masukkan nama jabatan yang jelas dan unik.</p>
                             </div>
                         </div>
 
