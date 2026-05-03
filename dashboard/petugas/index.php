@@ -1,3 +1,74 @@
+<?php
+
+declare(strict_types=1);
+
+require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../../config/helpers.php';
+
+$successMessage = '';
+$errorMessage = '';
+
+// DELETE
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $deleteId = filter_input(INPUT_POST, 'delete_id', FILTER_VALIDATE_INT);
+
+    if ($deleteId) {
+        try {
+            $deleteStmt = $pdo->prepare(
+                'DELETE FROM tb_petugas WHERE id_petugas = :id_petugas'
+            );
+            $deleteStmt->execute(['id_petugas' => $deleteId]);
+
+            header('Location: index.php?success=Data petugas berhasil dihapus');
+            exit;
+        } catch (Throwable $exception) {
+            $errorMessage = 'Gagal menghapus data: ' . $exception->getMessage();
+        }
+    }
+}
+
+// MESSAGE & SEARCH
+$successMessage = trim((string) ($_GET['success'] ?? ''));
+$q = trim((string) ($_GET['q'] ?? ''));
+
+// QUERY
+$sql = "SELECT 
+            id_petugas,
+            nama_petugas,
+            id_jabatan,
+            no_telp
+        FROM tb_petugas";
+
+$conditions = [];
+$params = [];
+
+// SEARCH
+if ($q !== '') {
+    $conditions[] = "(
+        CAST(id_petugas AS CHAR) LIKE :q OR 
+        nama_petugas LIKE :q OR 
+        no_telp LIKE :q
+    )";
+    $params['q'] = '%' . $q . '%';
+}
+
+// APPLY FILTER
+if (!empty($conditions)) {
+    $sql .= ' WHERE ' . implode(' AND ', $conditions);
+}
+
+// ORDER
+$sql .= ' ORDER BY id_petugas DESC';
+
+// EXECUTE
+$stmt = $pdo->prepare($sql);
+$stmt->execute($params);
+$petugasList = $stmt->fetchAll();
+
+// TOTAL
+$totalStmt = $pdo->query('SELECT COUNT(*) FROM tb_petugas');
+$totalPetugas = (int) $totalStmt->fetchColumn();
+?>
 <!doctype html>
 <html lang="id">
 
