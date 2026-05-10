@@ -2,6 +2,13 @@
 
 declare(strict_types=1);
 
+session_start();
+
+if (!isset($_SESSION['user_id']) || !is_numeric($_SESSION['user_id'])) {
+    header('Location: ../../auth/login.php');
+    exit;
+}
+
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../config/helpers.php';
 
@@ -53,8 +60,31 @@ if (!$petugas) {
 $formData = [
     'nama_petugas' => $petugas['nama_petugas'] ?? '',
     'id_jabatan' => (string) ($petugas['id_jabatan'] ?? ''),
+    'id_user' => (string) ($petugas['id_user'] ?? ''),
     'no_telp' => $petugas['no_telp'] ?? '',
 ];
+
+$users = [];
+try {
+    $currentUserId = $formData['id_user'] !== '' ? (int) $formData['id_user'] : 0;
+    $userStmt = $pdo->prepare(
+        "SELECT u.id_user, u.username, u.role
+         FROM tb_user u
+         LEFT JOIN tb_petugas p ON p.id_user = u.id_user AND p.id_petugas <> :id_petugas
+         WHERE u.role <> 'admin' AND (p.id_user IS NULL OR u.id_user = :current_user_id)
+         ORDER BY u.username ASC"
+    );
+    $userStmt->execute([
+        'id_petugas' => $petugas_id,
+        'current_user_id' => $currentUserId,
+    ]);
+    $users = $userStmt->fetchAll();
+} catch (Throwable $exception) {
+    http_response_code(500);
+    error_log('Gagal memuat data user: ' . $exception->getMessage());
+    echo 'Gagal memuat data user. Silakan coba lagi nanti.';
+    exit;
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = trim((string) ($_POST['action'] ?? 'save'));
@@ -73,6 +103,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors[] = 'Jabatan wajib diisi.';
     }
 
+    if ($formData['id_user'] !== '' && !ctype_digit($formData['id_user'])) {
+        $errors[] = 'Akun user tidak valid.';
+    }
+
     if ($formData['no_telp'] === '') {
         $errors[] = 'Nomor telepon wajib diisi.';
     } elseif ((function_exists('mb_strlen') ? mb_strlen($formData['no_telp'], 'UTF-8') : strlen($formData['no_telp'])) > 20) {
@@ -83,13 +117,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             $updateStmt = $pdo->prepare(
                 'UPDATE tb_petugas 
-                 SET nama_petugas = :nama_petugas, id_jabatan = :id_jabatan, no_telp = :no_telp 
+                 SET nama_petugas = :nama_petugas, id_jabatan = :id_jabatan, id_user = :id_user, no_telp = :no_telp 
                  WHERE id_petugas = :id_petugas'
             );
 
             $updateStmt->execute([
                 'nama_petugas' => $formData['nama_petugas'],
                 'id_jabatan' => $formData['id_jabatan'],
+                'id_user' => $formData['id_user'] !== '' ? (int) $formData['id_user'] : null,
                 'no_telp' => $formData['no_telp'],
                 'id_petugas' => $petugas_id,
             ]);
@@ -262,6 +297,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <?php foreach ($jabatans as $jabatan): ?>
                                         <option value="<?php echo e((string) $jabatan['id_jabatan']); ?>" <?php echo e($formData['id_jabatan'] === (string) $jabatan['id_jabatan'] ? 'selected' : ''); ?>>
                                             <?php echo e($jabatan['nama_jabatan']); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="form-label" for="id_user">Akun User</label>
+                                <select
+                                    id="id_user"
+                                    name="id_user"
+                                    class="form-control-custom">
+                                    <option value="" <?php echo e($formData['id_user'] === '' ? 'selected' : ''); ?>>Tanpa akun</option>
+                                    <?php foreach ($users as $user): ?>
+                                        <option value="<?php echo e((string) $user['id_user']); ?>" <?php echo e($formData['id_user'] === (string) $user['id_user'] ? 'selected' : ''); ?>>
+                                            <?php echo e($user['username'] . ' (' . $user['role'] . ')'); ?>
                                         </option>
                                     <?php endforeach; ?>
                                 </select>

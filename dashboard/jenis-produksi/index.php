@@ -14,51 +14,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($deleteId) {
         try {
-            $deleteStmt = $pdo->prepare('DELETE FROM tb_produksi WHERE id_produksi = :id_produksi');
-            $deleteStmt->execute(['id_produksi' => $deleteId]);
-            header('Location: index.php?success=Data catatan produksi berhasil dihapus');
-            exit;
+            $checkStmt = $pdo->prepare('SELECT COUNT(*) FROM tb_produksi WHERE id_jenis_produksi = :id_jenis_produksi');
+            $checkStmt->execute(['id_jenis_produksi' => $deleteId]);
+
+            if ((int) $checkStmt->fetchColumn() > 0) {
+                $errorMessage = 'Jenis produksi tidak bisa dihapus karena masih dipakai pada catatan produksi.';
+            } else {
+                $deleteStmt = $pdo->prepare('DELETE FROM tb_jenis_produksi WHERE id_jenis_produksi = :id_jenis_produksi');
+                $deleteStmt->execute(['id_jenis_produksi' => $deleteId]);
+                header('Location: index.php?success=Data jenis produksi berhasil dihapus');
+                exit;
+            }
         } catch (Throwable $exception) {
             $errorMessage = 'Gagal menghapus data: ' . $exception->getMessage();
         }
     }
 }
 
-$sql = "SELECT 
-			pr.id_produksi,
-			pr.tgl_produksi,
-			CONCAT('TRN-', LPAD(t.id_ternak, 3, '0')) AS kode_ternak,
-			jt.nama_jenis,
-			jp.nama_produksi,
-			jp.satuan,
-			pr.jumlah_produksi
-		FROM tb_produksi pr
-		INNER JOIN tb_ternak t ON t.id_ternak = pr.id_ternak
-		INNER JOIN tb_jenis_ternak jt ON jt.id_jenis_ternak = t.id_jenis_ternak
-		INNER JOIN tb_jenis_produksi jp ON jp.id_jenis_produksi = pr.id_jenis_produksi";
-
-$conditions = [];
+$sql = 'SELECT id_jenis_produksi, nama_produksi, satuan FROM tb_jenis_produksi';
 $params = [];
 if ($q !== '') {
-    $conditions[] = "(
-		CAST(pr.id_produksi AS CHAR) LIKE :q OR
-		CONCAT('TRN-', LPAD(t.id_ternak, 3, '0')) LIKE :q OR
-		jt.nama_jenis LIKE :q OR
-		jp.nama_produksi LIKE :q
-	)";
+    $sql .= ' WHERE (CAST(id_jenis_produksi AS CHAR) LIKE :q OR nama_produksi LIKE :q OR satuan LIKE :q)';
     $params['q'] = '%' . $q . '%';
 }
-if ($conditions !== []) {
-    $sql .= ' WHERE ' . implode(' AND ', $conditions);
-}
-$sql .= ' ORDER BY pr.id_produksi DESC';
+$sql .= ' ORDER BY nama_produksi ASC';
 
 $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
-$produksiList = $stmt->fetchAll();
+$jenisProduksiList = $stmt->fetchAll();
 
-$totalStmt = $pdo->query('SELECT COUNT(*) FROM tb_produksi');
-$totalProduksi = (int) $totalStmt->fetchColumn();
+$totalStmt = $pdo->query('SELECT COUNT(*) FROM tb_jenis_produksi');
+$totalJenisProduksi = (int) $totalStmt->fetchColumn();
 ?>
 <!doctype html>
 <html lang="id">
@@ -66,7 +52,7 @@ $totalProduksi = (int) $totalStmt->fetchColumn();
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Catatan Produksi — LivestockID</title>
+    <title>Jenis Produksi — LivestockID</title>
     <link rel="stylesheet" href="../style.css" />
 </head>
 
@@ -88,52 +74,48 @@ $totalProduksi = (int) $totalStmt->fetchColumn();
                 <p class="nav-section-label">Pengaturan</p>
                 <ul style="list-style:none;padding:0;margin:0;">
                     <li class="nav-item"><a href="../tindakan/index.php" class="nav-link-item"><i class="bi bi-bandaid"></i><span>Tindakan</span></a></li>
-                    <li class="nav-item"><a href="../jenis-produksi/index.php" class="nav-link-item"><i class="bi bi-journal-richtext"></i><span>Jenis Produksi</span></a></li>
+                    <li class="nav-item"><a href="../jenis-produksi/index.php" class="nav-link-item active"><i class="bi bi-journal-richtext"></i><span>Jenis Produksi</span></a></li>
                 </ul>
                 <p class="nav-section-label">Pencatatan</p>
                 <ul style="list-style:none;padding:0;margin:0;">
                     <li class="nav-item"><a href="../rekam-kesehatan/index.php" class="nav-link-item"><i class="bi bi-heart-pulse"></i><span>Rekam Kesehatan</span></a></li>
-                    <li class="nav-item"><a href="index.php" class="nav-link-item active"><i class="bi bi-droplet-half"></i><span>Catatan Produksi</span></a></li>
+                    <li class="nav-item"><a href="../catatan-produksi/index.php" class="nav-link-item"><i class="bi bi-droplet-half"></i><span>Catatan Produksi</span></a></li>
                 </ul>
             </nav>
             <div class="sidebar-footer"><a href="../../auth/login.php" class="nav-link-item"><i class="bi bi-box-arrow-left"></i><span>Keluar</span></a></div>
         </aside>
         <div class="main-area">
-            <header class="topbar"><button class="sidebar-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')"><i class="bi bi-list"></i></button><span class="topbar-title">Catatan Produksi</span></header>
+            <header class="topbar"><button class="sidebar-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')"><i class="bi bi-list"></i></button><span class="topbar-title">Jenis Produksi</span></header>
             <main class="page-content">
                 <div class="list-header">
                     <div>
-                        <h2>Catatan Produksi</h2>
-                        <p style="margin:4px 0 0;font-size:13px;color:#7c8493;">Total <?php echo e((string) $totalProduksi); ?> catatan produksi</p>
-                    </div><a href="create.php" class="btn-primary-custom"><i class="bi bi-plus-lg"></i> Tambah Catatan</a>
+                        <h2>Daftar Jenis Produksi</h2>
+                        <p style="margin:4px 0 0;font-size:13px;color:#7c8493;">Total <?php echo e((string) $totalJenisProduksi); ?> jenis produksi terdaftar</p>
+                    </div><a href="create.php" class="btn-primary-custom"><i class="bi bi-plus-lg"></i> Tambah Jenis</a>
                 </div><?php if ($successMessage !== ''): ?><div class="card-panel" style="border-left:4px solid #2f7d32;margin-bottom:16px;color:#1f5f24;"><?php echo e($successMessage); ?></div><?php endif; ?><?php if ($errorMessage !== ''): ?><div class="card-panel" style="border-left:4px solid #e05252;margin-bottom:16px;">
                         <p style="margin:0;font-weight:600;color:#9f1f1f;">Terjadi kesalahan:</p>
                         <p style="margin:4px 0 0;color:#6b2121;"><?php echo e($errorMessage); ?></p>
                     </div><?php endif; ?><div class="card-panel" style="margin-bottom:0">
                     <form method="GET" class="table-toolbar">
-                        <div class="search-box"><i class="bi bi-search"></i><input type="text" name="q" value="<?php echo e($q); ?>" placeholder="Cari ternak atau jenis produksi..." /></div><button type="submit" class="btn-secondary-custom">Cari</button>
+                        <div class="search-box"><i class="bi bi-search"></i><input type="text" name="q" value="<?php echo e($q); ?>" placeholder="Cari nama atau satuan..." /></div><button type="submit" class="btn-secondary-custom">Cari</button>
                     </form>
                     <div class="table-wrapper">
                         <table class="data-table">
                             <thead>
                                 <tr>
-                                    <th>Tanggal</th>
-                                    <th>Ternak</th>
                                     <th>Jenis Produksi</th>
-                                    <th>Jumlah</th>
+                                    <th>Satuan</th>
                                     <th style="text-align:center">Aksi</th>
                                 </tr>
                             </thead>
-                            <tbody><?php if ($produksiList === []): ?><tr>
-                                        <td colspan="5" style="text-align:center;padding:20px;color:#7c8493;">Belum ada data catatan produksi.</td>
-                                    </tr><?php else: ?><?php foreach ($produksiList as $item): ?><tr>
-                                        <td><?php echo e(date('d M Y', strtotime((string) $item['tgl_produksi']))); ?></td>
-                                        <td><strong><?php echo e($item['kode_ternak']); ?></strong><br /><span style="font-size:12px;color:#7c8493;"><?php echo e($item['nama_jenis']); ?></span></td>
-                                        <td><?php echo e($item['nama_produksi']); ?><br /><span style="font-size:12px;color:#7c8493;"><?php echo e($item['satuan']); ?></span></td>
-                                        <td><?php echo e((string) $item['jumlah_produksi']); ?></td>
+                            <tbody><?php if ($jenisProduksiList === []): ?><tr>
+                                        <td colspan="3" style="text-align:center;padding:20px;color:#7c8493;">Belum ada data jenis produksi.</td>
+                                    </tr><?php else: ?><?php foreach ($jenisProduksiList as $jenis): ?><tr>
+                                        <td><?php echo e($jenis['nama_produksi']); ?></td>
+                                        <td><?php echo e($jenis['satuan']); ?></td>
                                         <td style="text-align:center;">
-                                            <div style="display:flex;gap:6px;justify-content:center;"><a href="update.php?id=<?php echo (int) $item['id_produksi']; ?>" class="action-btn" title="Edit"><i class="bi bi-pencil"></i></a>
-                                                <form method="POST" style="margin:0;" onsubmit="return confirm('Hapus catatan ini?');"><input type="hidden" name="delete_id" value="<?php echo (int) $item['id_produksi']; ?>" /><button type="submit" class="action-btn danger" title="Hapus"><i class="bi bi-trash"></i></button></form>
+                                            <div style="display:flex;gap:6px;justify-content:center;"><a href="update.php?id=<?php echo (int) $jenis['id_jenis_produksi']; ?>" class="action-btn" title="Edit"><i class="bi bi-pencil"></i></a>
+                                                <form method="POST" style="margin:0;" onsubmit="return confirm('Hapus jenis produksi ini?');"><input type="hidden" name="delete_id" value="<?php echo (int) $jenis['id_jenis_produksi']; ?>" /><button type="submit" class="action-btn danger" title="Hapus"><i class="bi bi-trash"></i></button></form>
                                             </div>
                                         </td>
                                     </tr><?php endforeach; ?><?php endif; ?></tbody>

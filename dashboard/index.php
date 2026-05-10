@@ -3,7 +3,24 @@
 declare(strict_types=1);
 
 session_start();
-$name = isset($_SESSION['name']) && is_string($_SESSION['name']) ? $_SESSION['name'] : 'Admin';
+
+if (!isset($_SESSION['user_id']) || !is_numeric($_SESSION['user_id'])) {
+  header('Location: ../auth/login.php');
+  exit;
+}
+
+$name = isset($_SESSION['username']) && is_string($_SESSION['username']) && $_SESSION['username'] !== '' ? $_SESSION['username'] : 'Admin';
+$role = isset($_SESSION['role']) && is_string($_SESSION['role']) && $_SESSION['role'] !== '' ? $_SESSION['role'] : 'admin';
+
+$roleLabelMap = [
+  'admin' => 'Administrator',
+  'dokter' => 'Dokter',
+  'petugas_lapang' => 'Petugas Lapang',
+  'petugas_produksi' => 'Petugas Produksi',
+];
+
+$roleLabel = $roleLabelMap[$role] ?? ucfirst(str_replace('_', ' ', $role));
+$avatarInitials = strtoupper(substr($name, 0, 2));
 
 ?>
 <!doctype html>
@@ -69,6 +86,22 @@ $name = isset($_SESSION['name']) && is_string($_SESSION['name']) ? $_SESSION['na
             </a>
           </li>
         </ul>
+
+        <p class="nav-section-label">Pengaturan</p>
+        <ul style="list-style: none; padding: 0; margin: 0">
+          <li class="nav-item">
+            <a href="tindakan/index.php" class="nav-link-item">
+              <i class="bi bi-bandaid"></i>
+              <span>Tindakan</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="jenis-produksi/index.php" class="nav-link-item">
+              <i class="bi bi-journal-richtext"></i>
+              <span>Jenis Produksi</span>
+            </a>
+          </li>
+        </ul>
       </nav>
 
       <div class="sidebar-footer">
@@ -105,9 +138,9 @@ $name = isset($_SESSION['name']) && is_string($_SESSION['name']) ? $_SESSION['na
               ">
             <div class="topbar-user-info">
               <span class="name"><?php echo htmlspecialchars($name, ENT_QUOTES, 'UTF-8'); ?></span>
-              <span class="role">Administrator</span>
+              <span class="role"><?php echo htmlspecialchars($roleLabel, ENT_QUOTES, 'UTF-8'); ?></span>
             </div>
-            <div class="topbar-avatar" title="Lihat profil">AS</div>
+            <div class="topbar-avatar" title="Lihat profil"><?php echo htmlspecialchars($avatarInitials, ENT_QUOTES, 'UTF-8'); ?></div>
           </a>
         </div>
       </header>

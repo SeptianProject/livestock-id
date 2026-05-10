@@ -2,6 +2,13 @@
 
 declare(strict_types=1);
 
+session_start();
+
+if (!isset($_SESSION['user_id']) || !is_numeric($_SESSION['user_id'])) {
+    header('Location: ../../auth/login.php');
+    exit;
+}
+
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../config/helpers.php';
 
@@ -36,7 +43,8 @@ $sql = "SELECT
             id_petugas,
             nama_petugas,
             id_jabatan,
-            no_telp
+            no_telp,
+            id_user
         FROM tb_petugas";
 
 $conditions = [];
@@ -196,6 +204,7 @@ $totalPetugas = (int) $totalStmt->fetchColumn();
                                 <tr>
                                     <th>Petugas</th>
                                     <th>Jabatan</th>
+                                    <th>Akun</th>
                                     <th>No. Telepon</th>
                                     <th style="text-align: center">Aksi</th>
                                 </tr>
@@ -204,6 +213,7 @@ $totalPetugas = (int) $totalStmt->fetchColumn();
                                 <?php if (empty($petugasList)): ?>
                                     <tr>
                                         <td colspan="4" style="text-align: center; padding: 24px; color: #7c8493;">
+                                        <td colspan="5" style="text-align: center; padding: 24px; color: #7c8493;">
                                             Tidak ada data petugas.
                                         </td>
                                     </tr>
@@ -247,6 +257,26 @@ $totalPetugas = (int) $totalStmt->fetchColumn();
                                                     error_log('Gagal memuat nama jabatan: ' . $e->getMessage());
                                                 }
                                                 echo e($jabatanName);
+                                                ?>
+                                            </td>
+                                            <td>
+                                                <?php
+                                                $userLabel = '-';
+                                                if (!empty($item['id_user'])) {
+                                                    try {
+                                                        $userStmt = $pdo->prepare('SELECT username, role FROM tb_user WHERE id_user = :id_user');
+                                                        $userStmt->execute(['id_user' => $item['id_user']]);
+                                                        $user = $userStmt->fetch();
+
+                                                        if ($user) {
+                                                            $userLabel = $user['username'] . ' (' . $user['role'] . ')';
+                                                        }
+                                                    } catch (Throwable $exception) {
+                                                        $userLabel = 'Error';
+                                                    }
+                                                }
+
+                                                echo e($userLabel);
                                                 ?>
                                             </td>
                                             <td><?php echo e($item['no_telp']); ?></td>
