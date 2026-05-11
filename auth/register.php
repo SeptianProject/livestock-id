@@ -13,54 +13,92 @@ if (isset($_SESSION['user_id']) && is_numeric($_SESSION['user_id'])) {
 
 $error = '';
 $success = '';
-$allowedRoles = ['admin', 'dokter', 'petugas_lapang', 'petugas_produksi'];
+const ALLOWED_ROLES = ['admin', 'dokter', 'petugas_lapang', 'petugas_produksi'];
+
+function validateRegisterInput(
+    string $username,
+    string $role,
+    string $password,
+    string $confirmPassword
+): string {
+    if ($username === '' || $role === '' || $password === '' || $confirmPassword === '') {
+        return 'Semua kolom wajib diisi.';
+    }
+    if (strlen($username) < 4) {
+        return 'Username minimal 4 karakter.';
+    }
+    if (!in_array($role, ALLOWED_ROLES, true)) {
+        return 'Role tidak valid.';
+    }
+    if (strlen($password) < 6) {
+        return 'Kata sandi minimal 6 karakter.';
+    }
+    if ($password !== $confirmPassword) {
+        return 'Kata sandi tidak cocok.';
+    }
+
+    return '';
+}
+
+function registerUser(PDO $pdo, string $username, string $role, string $password): int | false
+{
+    $checkStmt = $pdo->prepare('SELECT COUNT(*) FROM tb_user WHERE username = :username');
+    $checkStmt->execute(['username' => $username]);
+
+    if ((int) $checkStmt->fetchColumn() > 0) {
+        return false;
+    }
+
+    $insertStmt = $pdo->prepare(
+        'INSERT INTO tb_user (username, password, role) VALUES (:username, :password, :role)'
+    );
+    $insertStmt->execute([
+        'username' => $username,
+        'password' => password_hash($password, PASSWORD_DEFAULT),
+        'role'     => $role,
+    ]);
+
+    return (int) $pdo->lastInsertId();
+}
+
+function setRegisterSession(int $userId, string $username, string $role): void
+{
+    session_regenerate_id(true);
+
+    $_SESSION['user_id']      = $userId;
+    $_SESSION['username']     = $username;
+    $_SESSION['role']         = $role;
+    $_SESSION['petugas_id']   = null;
+    $_SESSION['petugas_name'] = null;
+    $_SESSION['jabatan_id']   = null;
+    $_SESSION['jabatan_name'] = null;
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = trim((string) ($_POST['username'] ?? ''));
     $role = trim((string) ($_POST['role'] ?? 'petugas_lapang'));
-    $kata_sandi = trim((string) ($_POST['kata_sandi'] ?? ''));
-    $konfirmasi_sandi = trim((string) ($_POST['konfirmasi_sandi'] ?? ''));
+    $password = (string) ($_POST['password'] ?? '');
+    $confirmPassword = (string) ($_POST['confirm_password'] ?? '');
 
-    if ($username === '' || $role === '' || $kata_sandi === '' || $konfirmasi_sandi === '') {
-        $error = 'Semua kolom wajib diisi.';
-    } elseif (strlen($username) < 4) {
-        $error = 'Username minimal 4 karakter.';
-    } elseif (!in_array($role, $allowedRoles, true)) {
-        $error = 'Role tidak valid.';
-    } elseif ($kata_sandi !== $konfirmasi_sandi) {
-        $error = 'Kata sandi tidak cocok.';
-    } elseif (strlen($kata_sandi) < 6) {
-        $error = 'Kata sandi minimal 6 karakter.';
-    } else {
-        $checkStmt = $pdo->prepare('SELECT COUNT(*) FROM tb_user WHERE username = :username');
-        $checkStmt->execute(['username' => $username]);
+    $error = validateRegisterInput($username, $role, $password, $confirmPassword);
 
-        if ((int) $checkStmt->fetchColumn() > 0) {
-            $error = 'Username sudah digunakan.';
-        } else {
-            $hashedPassword = password_hash($kata_sandi, PASSWORD_DEFAULT);
+    if ($error === '') {
+        try {
+            $userId = registerUser($pdo, $username, $password, $role);
 
-            $insertStmt = $pdo->prepare('INSERT INTO tb_user (username, password, role) VALUES (:username, :password, :role)');
-            $insertStmt->execute([
-                'username' => $username,
-                'password' => $hashedPassword,
-                'role' => $role,
-            ]);
-
-            $userId = (int) $pdo->lastInsertId();
-
-            session_regenerate_id(true);
-            $_SESSION['user_id'] = $userId;
-            $_SESSION['username'] = $username;
-            $_SESSION['role'] = $role;
-            $_SESSION['name'] = $username;
-            $_SESSION['petugas_id'] = null;
-            $_SESSION['petugas_name'] = null;
-            $_SESSION['jabatan_id'] = null;
-            $_SESSION['jabatan_name'] = null;
-
-            $success = 'Registrasi berhasil! Anda akan diarahkan ke dashboard.';
-            header('Refresh: 2; URL=../dashboard/index.php');
+            if ($userId === false) {
+                $error = 'Username sudah digunakan.';
+            } else {
+                setRegisterSession($userId, $username, $role);
+                $success = 'Registrasi berhasil! Anda akan diarahkan ke dashboard.';
+                header('Refresh: 2; URL=../dashboard/index.php');
+            }
+        } catch (PDOException $e) {
+            if (isset($e->errorInfo[1]) && $e->errorInfo[1] === 1062) {
+                $error = 'Username sudah digunakan.';
+            } else {
+                throw $e;
+            }
         }
     }
 }
@@ -118,10 +156,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                         <div class="auth-grid auth-grid--2">
                             <div class="auth-field">
-                                <label for="kata_sandi" class="auth-label">Kata Sandi</label>
+                                <label for="password" class="auth-label">Kata Sandi</label>
                                 <div class="auth-password-field">
-                                    <input type="password" id="kata_sandi" name="kata_sandi" class="form-control auth-control" required />
-                                    <span class="auth-password-toggle" onclick="togglePassword('kata_sandi')">
+                                    <input type="password" id="password" name="password" class="form-control auth-control" required />
+                                    <span class="auth-password-toggle" onclick="togglePassword('password')">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 16 16">
                                             <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0" />
                                             <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7" />
@@ -131,10 +169,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             </div>
 
                             <div class="auth-field">
-                                <label for="konfirmasi_sandi" class="auth-label">Konfirmasi Kata Sandi</label>
+                                <label for="confirm_password" class="auth-label">Konfirmasi Kata Sandi</label>
                                 <div class="auth-password-field">
-                                    <input type="password" id="konfirmasi_sandi" name="konfirmasi_sandi" class="form-control auth-control" required />
-                                    <span class="auth-password-toggle" onclick="togglePassword('konfirmasi_sandi')">
+                                    <input type="password" id="confirm_password" name="confirm_password" class="form-control auth-control" required />
+                                    <span class="auth-password-toggle" onclick="togglePassword('confirm_password')">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 16 16">
                                             <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0" />
                                             <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7" />

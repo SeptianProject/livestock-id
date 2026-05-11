@@ -13,43 +13,60 @@ if (isset($_SESSION['user_id']) && is_numeric($_SESSION['user_id'])) {
 
 $error = '';
 
+function attemptLogin(PDO $pdo, string $username, string $password): array|false
+{
+    $stmt = $pdo->prepare(
+        'SELECT u.id_user, u.username, u.password, u.role,
+                p.id_petugas, p.nama_petugas, p.id_jabatan, j.nama_jabatan
+         FROM tb_user u
+         LEFT JOIN tb_petugas p ON p.id_user = u.id_user
+         LEFT JOIN tb_jabatan j ON j.id_jabatan = p.id_jabatan
+         WHERE u.username = :username
+         LIMIT 1'
+    );
+    $stmt->execute(['username' => $username]);
+    $user = $stmt->fetch();
+
+    if (!$user || !password_verify($password, (string) $user['password'])) {
+        return false;
+    }
+
+    return $user;
+}
+
+function setLoginSession(array $user): void
+{
+    session_regenerate_id(true);
+
+    $_SESSION['user_id']      = (int) $user['id_user'];
+    $_SESSION['username']     = (string) $user['username'];
+    $_SESSION['role']         = (string) $user['role'];
+    $_SESSION['petugas_id']   = $user['id_petugas']    !== null ? (int)    $user['id_petugas']    : null;
+    $_SESSION['petugas_name'] = $user['nama_petugas']  !== null ? (string) $user['nama_petugas']  : null;
+    $_SESSION['jabatan_id']   = $user['id_jabatan']    !== null ? (int)    $user['id_jabatan']    : null;
+    $_SESSION['jabatan_name'] = $user['nama_jabatan']  !== null ? (string) $user['nama_jabatan']  : null;
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = trim((string) ($_POST['username'] ?? ''));
-    $password = trim((string) ($_POST['password'] ?? ''));
+    $password = (string) ($_POST['password'] ?? '');
 
-    if ($name === '' || $password === '') {
+    if ($username === '' || $password === '') {
         $error = 'Username dan password wajib diisi.';
     } else {
-        $statement = $pdo->prepare(
-            'SELECT u.id_user, u.username, u.password, u.role, p.id_petugas, p.nama_petugas, p.id_jabatan, j.nama_jabatan
-             FROM tb_user u
-             LEFT JOIN tb_petugas p ON p.id_user = u.id_user
-             LEFT JOIN tb_jabatan j ON j.id_jabatan = p.id_jabatan
-             WHERE u.username = :username
-             LIMIT 1'
-        );
-        $statement->execute(['username' => $name]);
-        $user = $statement->fetch();
+        $user = attemptLogin($pdo, $username, $password);
 
-        if (!$user || !password_verify($password, (string) $user['password'])) {
+        if ($user === false) {
             $error = 'Username atau password salah.';
         } else {
-            session_regenerate_id(true);
-            $_SESSION['user_id'] = (int) $user['id_user'];
-            $_SESSION['username'] = (string) $user['username'];
-            $_SESSION['role'] = (string) $user['role'];
-            $_SESSION['name'] = (string) $user['username'];
-            $_SESSION['petugas_id'] = $user['id_petugas'] !== null ? (int) $user['id_petugas'] : null;
-            $_SESSION['petugas_name'] = $user['nama_petugas'] !== null ? (string) $user['nama_petugas'] : null;
-            $_SESSION['jabatan_id'] = $user['id_jabatan'] !== null ? (int) $user['id_jabatan'] : null;
-            $_SESSION['jabatan_name'] = $user['nama_jabatan'] !== null ? (string) $user['nama_jabatan'] : null;
-
+            setLoginSession($user);
             header('Location: ../dashboard/index.php');
             exit;
         }
     }
 }
 ?>
+
 <!doctype html>
 <html lang="id">
 
