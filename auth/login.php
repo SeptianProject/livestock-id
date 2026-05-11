@@ -48,7 +48,7 @@ function setLoginSession(array $user): void
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $name = trim((string) ($_POST['username'] ?? ''));
+    $username = trim((string) ($_POST['username'] ?? ''));
     $password = (string) ($_POST['password'] ?? '');
 
     if ($username === '' || $password === '') {
@@ -99,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <form action="" method="post" novalidate>
                         <div class="auth-field">
                             <label for="username" class="auth-label">Username</label>
-                            <input type="text" id="username" name="username" class="form-control auth-control" value="<?php echo isset($name) ? htmlspecialchars($name, ENT_QUOTES, 'UTF-8') : ''; ?>" />
+                            <input type="text" id="username" name="username" class="form-control auth-control" value="<?php echo isset($username) ? htmlspecialchars($username, ENT_QUOTES, 'UTF-8') : ''; ?>" />
                         </div>
                         <div class="auth-field">
                             <label for="password" class="auth-label">Password</label>

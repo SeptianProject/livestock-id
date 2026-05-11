@@ -17,21 +17,21 @@ const ALLOWED_ROLES = ['admin', 'dokter', 'petugas_lapang', 'petugas_produksi'];
 
 function validateRegisterInput(
     string $username,
-    string $role,
     string $password,
+    string $role,
     string $confirmPassword
 ): string {
-    if ($username === '' || $role === '' || $password === '' || $confirmPassword === '') {
+    if ($username === '' || $password === '' || $role === ''  || $confirmPassword === '') {
         return 'Semua kolom wajib diisi.';
     }
     if (strlen($username) < 4) {
         return 'Username minimal 4 karakter.';
     }
-    if (!in_array($role, ALLOWED_ROLES, true)) {
-        return 'Role tidak valid.';
-    }
     if (strlen($password) < 6) {
         return 'Kata sandi minimal 6 karakter.';
+    }
+    if (!in_array($role, ALLOWED_ROLES, true)) {
+        return 'Role tidak valid.';
     }
     if ($password !== $confirmPassword) {
         return 'Kata sandi tidak cocok.';
@@ -40,7 +40,7 @@ function validateRegisterInput(
     return '';
 }
 
-function registerUser(PDO $pdo, string $username, string $role, string $password): int | false
+function registerUser(PDO $pdo, string $username,  string $password, string $role): int | false
 {
     $checkStmt = $pdo->prepare('SELECT COUNT(*) FROM tb_user WHERE username = :username');
     $checkStmt->execute(['username' => $username]);
@@ -80,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = (string) ($_POST['password'] ?? '');
     $confirmPassword = (string) ($_POST['confirm_password'] ?? '');
 
-    $error = validateRegisterInput($username, $role, $password, $confirmPassword);
+    $error = validateRegisterInput($username, $password, $role, $confirmPassword);
 
     if ($error === '') {
         try {
