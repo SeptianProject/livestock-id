@@ -90,13 +90,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     <?php if ($error !== ''): ?>
                         <div class="auth-message auth-message--error">
-                            ⚠️ <?php echo htmlspecialchars($error, ENT_QUOTES, 'UTF-8'); ?>
+                            <?php echo htmlspecialchars($error, ENT_QUOTES, 'UTF-8'); ?>
                         </div>
                     <?php endif; ?>
 
                     <?php if ($success !== ''): ?>
                         <div class="auth-message auth-message--success">
-                            ✓ <?php echo htmlspecialchars($success, ENT_QUOTES, 'UTF-8'); ?>
+                            <?php echo htmlspecialchars($success, ENT_QUOTES, 'UTF-8'); ?>
                         </div>
                     <?php endif; ?>
 
@@ -121,7 +121,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <label for="kata_sandi" class="auth-label">Kata Sandi</label>
                                 <div class="auth-password-field">
                                     <input type="password" id="kata_sandi" name="kata_sandi" class="form-control auth-control" required />
-                                    <span class="auth-password-toggle" onclick="togglePassword('kata_sandi')">👁️</span>
+                                    <span class="auth-password-toggle" onclick="togglePassword('kata_sandi')">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 16 16">
+                                            <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0" />
+                                            <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7" />
+                                        </svg>
+                                    </span>
                                 </div>
                             </div>
 
@@ -129,7 +134,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <label for="konfirmasi_sandi" class="auth-label">Konfirmasi Kata Sandi</label>
                                 <div class="auth-password-field">
                                     <input type="password" id="konfirmasi_sandi" name="konfirmasi_sandi" class="form-control auth-control" required />
-                                    <span class="auth-password-toggle" onclick="togglePassword('konfirmasi_sandi')">👁️</span>
+                                    <span class="auth-password-toggle" onclick="togglePassword('konfirmasi_sandi')">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 16 16">
+                                            <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0" />
+                                            <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7" />
+                                        </svg>
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -143,11 +153,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <div class="col-md-6 d-none d-md-block">
                     <div class="auth-visual-section">
-                        <div class="auth-visual-content">
-                            <div class="auth-visual-badge">Registration</div>
-                            <h3>🐄 LivestockID</h3>
-                            <p>Kelola peternakan Anda dengan sistem manajemen modern dan efisien</p>
-                        </div>
                     </div>
                 </div>
             </div>

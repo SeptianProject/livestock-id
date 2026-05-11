@@ -99,11 +99,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <div class="col-md-6 d-none d-md-block">
                     <div class="auth-visual-section">
-                        <div class="auth-visual-content">
-                            <div class="auth-visual-badge">Authentication</div>
-                            <h3>Selalu terhubung dengan data peternakan Anda</h3>
-                            <p>Masuk ke dashboard untuk memantau ternak, produksi, kandang, dan aktivitas operasional dalam satu tempat.</p>
-                        </div>
                     </div>
                 </div>
             </div>
