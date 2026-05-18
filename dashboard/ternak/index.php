@@ -89,12 +89,9 @@ $totalTernak = (int) $totalStmt->fetchColumn();
                 <ul style="list-style: none; padding: 0; margin: 0">
                     <li class="nav-item"><a href="../index.php" class="nav-link-item"><i class="bi bi-speedometer2"></i><span>Overview</span></a></li>
                     <li class="nav-item"><a href="index.php" class="nav-link-item active"><i class="bi bi-box-seam"></i><span>Ternak</span></a></li>
+                    <li class="nav-item" style="margin-left: 20px;"><a href="../ternak/jenis-ternak/index.php" class="nav-link-item"><i class="bi bi-tags"></i><span>Jenis Ternak</span></a></li>
                     <li class="nav-item"><a href="../kandang/index.php" class="nav-link-item"><i class="bi bi-house-door"></i><span>Kandang</span></a></li>
                     <li class="nav-item"><a href="../petugas/index.php" class="nav-link-item"><i class="bi bi-people"></i><span>Petugas</span></a></li>
-                </ul>
-                <p class="nav-section-label">Pengaturan</p>
-                <ul style="list-style: none; padding: 0; margin: 0">
-                    <li class="nav-item"><a href="../jenis-ternak/index.php" class="nav-link-item"><i class="bi bi-tags"></i><span>Jenis Ternak</span></a></li>
                 </ul>
                 <p class="nav-section-label">Pencatatan</p>
                 <ul style="list-style: none; padding: 0; margin: 0">
