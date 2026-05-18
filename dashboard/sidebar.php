@@ -48,22 +48,6 @@
                 </a>
             </li>
         </ul>
-
-        <p class="nav-section-label">Pengaturan</p>
-        <ul style="list-style: none; padding: 0; margin: 0">
-            <li class="nav-item">
-                <a href="tindakan/index.php" class="nav-link-item">
-                    <i class="bi bi-bandaid"></i>
-                    <span>Tindakan</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="jenis-produksi/index.php" class="nav-link-item">
-                    <i class="bi bi-journal-richtext"></i>
-                    <span>Jenis Produksi</span>
-                </a>
-            </li>
-        </ul>
     </nav>
 
     <div class="sidebar-footer">

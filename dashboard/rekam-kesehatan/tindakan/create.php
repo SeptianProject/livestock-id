@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/../../config/database.php';
-require_once __DIR__ . '/../../config/helpers.php';
+require_once __DIR__ . '/../../../config/database.php';
+require_once __DIR__ . '/../../../config/helpers.php';
 
 $errors = [];
 $successMessage = '';
@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tambah Tindakan — LivestockID</title>
-    <link rel="stylesheet" href="../style.css" />
+    <link rel="stylesheet" href="../../style.css" />
 </head>
 
 <body>
@@ -71,15 +71,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <nav class="sidebar-nav">
                 <p class="nav-section-label">Menu Utama</p>
                 <ul style="list-style:none;padding:0;margin:0;">
-                    <li class="nav-item"><a href="../index.php" class="nav-link-item"><i class="bi bi-speedometer2"></i><span>Overview</span></a></li>
-                    <li class="nav-item"><a href="../ternak/index.php" class="nav-link-item"><i class="bi bi-box-seam"></i><span>Ternak</span></a></li>
-                    <li class="nav-item"><a href="../kandang/index.php" class="nav-link-item"><i class="bi bi-house-door"></i><span>Kandang</span></a></li>
-                    <li class="nav-item"><a href="../petugas/index.php" class="nav-link-item"><i class="bi bi-people"></i><span>Petugas</span></a></li>
+                    <li class="nav-item"><a href="../../index.php" class="nav-link-item"><i class="bi bi-speedometer2"></i><span>Overview</span></a></li>
+                    <li class="nav-item"><a href="../../ternak/index.php" class="nav-link-item"><i class="bi bi-box-seam"></i><span>Ternak</span></a></li>
+                    <li class="nav-item"><a href="../../kandang/index.php" class="nav-link-item"><i class="bi bi-house-door"></i><span>Kandang</span></a></li>
+                    <li class="nav-item"><a href="../../petugas/index.php" class="nav-link-item"><i class="bi bi-people"></i><span>Petugas</span></a></li>
                 </ul>
-                <p class="nav-section-label">Pengaturan</p>
+                <p class="nav-section-label">Pencatatan</p>
                 <ul style="list-style:none;padding:0;margin:0;">
-                    <li class="nav-item"><a href="../tindakan/index.php" class="nav-link-item active"><i class="bi bi-bandaid"></i><span>Tindakan</span></a></li>
-                    <li class="nav-item"><a href="../jenis-produksi/index.php" class="nav-link-item"><i class="bi bi-journal-richtext"></i><span>Jenis Produksi</span></a></li>
+                    <li class="nav-item"><a href="../index.php" class="nav-link-item"><i class="bi bi-heart-pulse"></i><span>Rekam Kesehatan</span></a></li>
+                    <li class="nav-item" style="margin-left: 20px;"><a href="index.php" class="nav-link-item active"><i class="bi bi-bandaid"></i><span>Tindakan</span></a></li>
+                    <li class="nav-item"><a href="../../catatan-produksi/index.php" class="nav-link-item"><i class="bi bi-journal-richtext"></i><span>Catatan Produksi</span></a></li>
                 </ul>
             </nav>
         </aside>

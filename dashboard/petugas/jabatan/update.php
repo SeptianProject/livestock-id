@@ -2,18 +2,47 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/../../config/database.php';
-require_once __DIR__ . '/../../config/helpers.php';
+require_once __DIR__ . '/../../../config/database.php';
+require_once __DIR__ . '/../../../config/helpers.php';
 
 $errors = [];
 $successMessage = '';
+$jabatan = null;
+
+// Get ID dari URL
+$jabatan_id = (int) ($_GET['id'] ?? 0);
+
+if ($jabatan_id <= 0) {
+    http_response_code(404);
+    error_log('ID jabatan tidak valid');
+    echo 'ID jabatan tidak ditemukan.';
+    exit;
+}
+
+// Load data jabatan
+try {
+    $jabatanStmt = $pdo->prepare('SELECT * FROM tb_jabatan WHERE id_jabatan = :id_jabatan');
+    $jabatanStmt->execute(['id_jabatan' => $jabatan_id]);
+    $jabatan = $jabatanStmt->fetch();
+} catch (Throwable $exception) {
+    http_response_code(500);
+    error_log('Gagal memuat data jabatan: ' . $exception->getMessage());
+    echo 'Gagal memuat data jabatan. Silakan coba lagi nanti.';
+    exit;
+}
+
+if (!$jabatan) {
+    http_response_code(404);
+    error_log('Jabatan dengan ID ' . $jabatan_id . ' tidak ditemukan');
+    echo 'Jabatan tidak ditemukan.';
+    exit;
+}
+
 $formData = [
-    'nama_jabatan' => '',
+    'nama_jabatan' => $jabatan['nama_jabatan'] ?? '',
 ];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $action = trim((string) ($_POST['action'] ?? 'save'));
-
     foreach ($formData as $key => $defaultValue) {
         $formData[$key] = trim((string) ($_POST[$key] ?? $defaultValue));
     }
@@ -24,11 +53,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors[] = 'Nama jabatan maksimal 25 karakter.';
     }
 
-    // Check duplicate
+    // Check duplicate (excluding current jabatan)
     if ($errors === []) {
         try {
-            $checkStmt = $pdo->prepare('SELECT COUNT(*) FROM tb_jabatan WHERE LOWER(nama_jabatan) = LOWER(:nama_jabatan)');
-            $checkStmt->execute(['nama_jabatan' => $formData['nama_jabatan']]);
+            $checkStmt = $pdo->prepare('SELECT COUNT(*) FROM tb_jabatan WHERE LOWER(nama_jabatan) = LOWER(:nama_jabatan) AND id_jabatan != :id_jabatan');
+            $checkStmt->execute(['nama_jabatan' => $formData['nama_jabatan'], 'id_jabatan' => $jabatan_id]);
             $count = (int) $checkStmt->fetchColumn();
 
             if ($count > 0) {
@@ -42,26 +71,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($errors === []) {
         try {
-            $insertStmt = $pdo->prepare(
-                'INSERT INTO tb_jabatan (nama_jabatan)
-                 VALUES (:nama_jabatan)'
+            $updateStmt = $pdo->prepare(
+                'UPDATE tb_jabatan 
+                 SET nama_jabatan = :nama_jabatan 
+                 WHERE id_jabatan = :id_jabatan'
             );
 
-            $insertStmt->execute([
+            $updateStmt->execute([
                 'nama_jabatan' => $formData['nama_jabatan'],
+                'id_jabatan' => $jabatan_id,
             ]);
 
-            if ($action === 'save_new') {
-                $successMessage = 'Data jabatan berhasil disimpan. Silakan tambah data baru.';
-                $formData = [
-                    'nama_jabatan' => '',
-                ];
-            } else {
-                header('Location: index.php?success=Data jabatan berhasil ditambahkan');
-                exit;
-            }
+            header('Location: index.php?success=Data jabatan berhasil diubah');
+            exit;
         } catch (Throwable $exception) {
-            error_log('Gagal menyimpan data jabatan: ' . $exception->getMessage());
+            error_log('Gagal memperbarui data jabatan: ' . $exception->getMessage());
             $errors[] = 'Gagal menyimpan data jabatan. Pastikan nama jabatan maksimal 25 karakter dan belum digunakan.';
         }
     }
@@ -75,8 +99,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tambah Jabatan — LivestockID</title>
-    <link rel="stylesheet" href="../style.css" />
+    <title>Edit Jabatan — LivestockID</title>
+    <link rel="stylesheet" href="../../style.css" />
 </head>
 
 <body>
@@ -91,31 +115,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <p class="nav-section-label">Menu Utama</p>
                 <ul style="list-style: none; padding: 0; margin: 0">
                     <li class="nav-item">
-                        <a href="../index.php" class="nav-link-item"><i class="bi bi-speedometer2"></i><span>Overview</span></a>
+                        <a href="../../index.php" class="nav-link-item"><i class="bi bi-speedometer2"></i><span>Overview</span></a>
                     </li>
                     <li class="nav-item">
-                        <a href="../ternak/index.php" class="nav-link-item"><i class="bi bi-box-seam"></i><span>Ternak</span></a>
+                        <a href="../../ternak/index.php" class="nav-link-item"><i class="bi bi-box-seam"></i><span>Ternak</span></a>
                     </li>
                     <li class="nav-item">
-                        <a href="../kandang/index.php" class="nav-link-item"><i class="bi bi-house-door"></i><span>Kandang</span></a>
+                        <a href="../../kandang/index.php" class="nav-link-item"><i class="bi bi-house-door"></i><span>Kandang</span></a>
                     </li>
                     <li class="nav-item">
-                        <a href="../petugas/index.php" class="nav-link-item"><i class="bi bi-people"></i><span>Petugas</span></a>
+                        <a href="../index.php" class="nav-link-item"><i class="bi bi-people"></i><span>Petugas</span></a>
                     </li>
-                </ul>
-                <p class="nav-section-label">Pengaturan</p>
-                <ul style="list-style: none; padding: 0; margin: 0">
-                    <li class="nav-item">
+                    <li class="nav-item" style="margin-left: 20px;">
                         <a href="index.php" class="nav-link-item active"><i class="bi bi-briefcase"></i><span>Jabatan</span></a>
                     </li>
                 </ul>
                 <p class="nav-section-label">Pencatatan</p>
                 <ul style="list-style: none; padding: 0; margin: 0">
                     <li class="nav-item">
-                        <a href="#" class="nav-link-item"><i class="bi bi-heart-pulse"></i><span>Rekam Kesehatan</span></a>
+                        <a href="../../rekam-kesehatan/index.php" class="nav-link-item"><i class="bi bi-heart-pulse"></i><span>Rekam Kesehatan</span></a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link-item"><i class="bi bi-journal-text"></i><span>Catatan Produksi</span></a>
+                        <a href="../../catatan-produksi/index.php" class="nav-link-item"><i class="bi bi-journal-text"></i><span>Catatan Produksi</span></a>
                     </li>
                 </ul>
             </nav>
@@ -130,24 +151,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <button
                     class="sidebar-toggle"
                     onclick="
-              document.getElementById('sidebar').classList.toggle('open')
-            ">
+                  document.getElementById('sidebar').classList.toggle('open')
+                ">
                     <i class="bi bi-list"></i>
                 </button>
                 <div style="display: flex; align-items: center; gap: 8px; flex: 1">
                     <a
                         href="index.php"
                         style="
-                color: #7c8493;
-                font-size: 13px;
-                display: flex;
-                align-items: center;
-                gap: 4px;
-              "><i class="bi bi-chevron-left"></i> Jabatan</a>
+                    color: #7c8493;
+                    font-size: 13px;
+                    display: flex;
+                    align-items: center;
+                    gap: 4px;
+                  "><i class="bi bi-chevron-left"></i> Jabatan</a>
                     <i
                         class="bi bi-chevron-right"
                         style="font-size: 11px; color: #b0b8c4"></i>
-                    <span class="topbar-title" style="font-size: 15px">Tambah Jabatan</span>
+                    <span class="topbar-title" style="font-size: 15px">Edit Jabatan</span>
                 </div>
                 <div class="topbar-actions">
                     <div class="topbar-notif">
@@ -156,11 +177,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <a
                         href="../profile/index.php"
                         style="
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                text-decoration: none;
-              ">
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    text-decoration: none;
+                  ">
                         <div class="topbar-user-info">
                             <span class="name">Admin</span><span class="role">Administrator</span>
                         </div>
@@ -171,9 +192,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <main class="page-content">
                 <div class="page-header">
-                    <h1>Tambah Jabatan Baru</h1>
+                    <h1>Edit Jabatan</h1>
                     <p>
-                        Tambahkan jabatan baru untuk sistem manajemen petugas LivestockID.
+                        Perbarui informasi jabatan yang sudah terdaftar di sistem LivestockID.
                     </p>
                 </div>
 
@@ -215,14 +236,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                         <div class="form-actions">
                             <button type="submit" class="btn-primary-custom">
-                                <i class="bi bi-check-lg"></i> Simpan Jabatan
-                            </button>
-                            <button
-                                type="submit"
-                                name="action"
-                                value="save_new"
-                                class="btn-secondary-custom">
-                                <i class="bi bi-plus-circle"></i> Simpan &amp; Buat Baru
+                                <i class="bi bi-check-lg"></i> Simpan Perubahan
                             </button>
                             <a href="index.php" class="btn-secondary-custom"><i class="bi bi-x-lg"></i> Batal</a>
                         </div>

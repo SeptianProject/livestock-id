@@ -129,15 +129,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <li class="nav-item"><a href="../ternak/index.php" class="nav-link-item"><i class="bi bi-box-seam"></i><span>Ternak</span></a></li>
                     <li class="nav-item"><a href="../kandang/index.php" class="nav-link-item"><i class="bi bi-house-door"></i><span>Kandang</span></a></li>
                     <li class="nav-item"><a href="index.php" class="nav-link-item active"><i class="bi bi-people"></i><span>Petugas</span></a></li>
-                </ul>
-                <p class="nav-section-label">Pengaturan</p>
-                <ul style="list-style: none; padding: 0; margin: 0">
-                    <li class="nav-item"><a href="../jabatan/index.php" class="nav-link-item"><i class="bi bi-briefcase"></i><span>Jabatan</span></a></li>
+                    <li class="nav-item" style="margin-left: 20px;"><a href="../petugas/jabatan/index.php" class="nav-link-item"><i class="bi bi-briefcase"></i><span>Jabatan</span></a></li>
                 </ul>
                 <p class="nav-section-label">Pencatatan</p>
                 <ul style="list-style: none; padding: 0; margin: 0">
-                    <li class="nav-item"><a href="#" class="nav-link-item"><i class="bi bi-heart-pulse"></i><span>Rekam Kesehatan</span></a></li>
-                    <li class="nav-item"><a href="#" class="nav-link-item"><i class="bi bi-journal-text"></i><span>Catatan Produksi</span></a></li>
+                    <li class="nav-item"><a href="../rekam-kesehatan/index.php" class="nav-link-item"><i class="bi bi-heart-pulse"></i><span>Rekam Kesehatan</span></a></li>
+                    <li class="nav-item"><a href="../catatan-produksi/index.php" class="nav-link-item"><i class="bi bi-journal-text"></i><span>Catatan Produksi</span></a></li>
                 </ul>
             </nav>
             <div class="sidebar-footer">
