@@ -122,7 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <p class="nav-section-label">Pencatatan</p>
                 <ul style="list-style:none;padding:0;margin:0;">
                     <li class="nav-item"><a href="index.php" class="nav-link-item active"><i class="bi bi-heart-pulse"></i><span>Rekam Kesehatan</span></a></li>
-                    <li class="nav-item" style="margin-left: 20px;"><a href="../tindakan/index.php" class="nav-link-item"><i class="bi bi-bandaid"></i><span>Tindakan</span></a></li>
+                    <li class="nav-item" style="margin-left: 20px;"><a href="../rekam-kesehatan/tindakan/index.php" class="nav-link-item"><i class="bi bi-bandaid"></i><span>Tindakan</span></a></li>
                     <li class="nav-item"><a href="../catatan-produksi/index.php" class="nav-link-item"><i class="bi bi-journal-richtext"></i><span>Catatan Produksi</span></a></li>
                 </ul>
             </nav>

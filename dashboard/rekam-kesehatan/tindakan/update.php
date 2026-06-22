@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '../../../config/database.php';
-require_once __DIR__ . '../../../config/helpers.php';
+require_once __DIR__ . '../../../../config/database.php';
+require_once __DIR__ . '../../../../config/helpers.php';
 
 $errors = [];
 $successMessage = '';
@@ -98,7 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <ul style="list-style:none;padding:0;margin:0;">
                     <li class="nav-item"><a href="../index.php" class="nav-link-item"><i class="bi bi-heart-pulse"></i><span>Rekam Kesehatan</span></a></li>
                     <li class="nav-item" style="margin-left: 20px;"><a href="index.php" class="nav-link-item active"><i class="bi bi-bandaid"></i><span>Tindakan</span></a></li>
-                    <li class="nav-item"><a href="../catatan-produksi/index.php" class="nav-link-item"><i class="bi bi-journal-richtext"></i><span>Catatan Produksi</span></a></li>
+                    <li class="nav-item"><a href="../../catatan-produksi/index.php" class="nav-link-item"><i class="bi bi-journal-richtext"></i><span>Catatan Produksi</span></a></li>
                 </ul>
             </nav>
         </aside>
