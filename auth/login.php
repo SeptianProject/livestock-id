@@ -9,7 +9,7 @@ require_once __DIR__ . '/../config/database.php';
 if (isset($_SESSION['user_id']) && is_numeric($_SESSION['user_id'])) {
     header('Location: ../dashboard/index.php');
     exit;
-}
+}   
 
 $error = '';
 
@@ -27,7 +27,7 @@ function attemptLogin(PDO $pdo, string $username, string $password): array|false
     $stmt->execute(['username' => $username]);
     $user = $stmt->fetch();
 
-    if (!$user || !password_verify($password, (string) $user['password'])) {
+    if (!$user || !password_verify($password, (string) $user['password'])) {    
         return false;
     }
 

@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+require_once __DIR__ . '../../../vendor/autoload.php';
+
 require_once __DIR__ . '../../../config/database.php';
 require_once __DIR__ . '../../../config/helpers.php';
 
@@ -101,8 +103,13 @@ $totalProduksi = (int) $totalStmt->fetchColumn();
                     <div>
                         <h2>Catatan Produksi</h2>
                         <p style="margin:4px 0 0;font-size:13px;color:#7c8493;">Total <?php echo e((string) $totalProduksi); ?> catatan produksi</p>
-                    </div><a href="create.php" class="btn-primary-custom"><i class="bi bi-plus-lg"></i> Tambah Catatan</a>
-                </div><?php if ($successMessage !== ''): ?><div class="card-panel" style="border-left:4px solid #2f7d32;margin-bottom:16px;color:#1f5f24;"><?php echo e($successMessage); ?></div><?php endif; ?><?php if ($errorMessage !== ''): ?><div class="card-panel" style="border-left:4px solid #e05252;margin-bottom:16px;">
+                    </div>
+                    <div class="flex gap-8">
+                        <a href="create.php" class="btn-primary-custom"><i class="bi bi-file-earmark-spreadsheet"></i>Cetak Catatan</a>
+                        <a href="create.php" class="btn-primary-custom"><i class="bi bi-plus-lg"></i>Tambah Catatan</a>
+                    </div>
+                </div>
+                <?php if ($successMessage !== ''): ?><div class="card-panel" style="border-left:4px solid #2f7d32;margin-bottom:16px;color:#1f5f24;"><?php echo e($successMessage); ?></div><?php endif; ?><?php if ($errorMessage !== ''): ?><div class="card-panel" style="border-left:4px solid #e05252;margin-bottom:16px;">
                         <p style="margin:0;font-weight:600;color:#9f1f1f;">Terjadi kesalahan:</p>
                         <p style="margin:4px 0 0;color:#6b2121;"><?php echo e($errorMessage); ?></p>
                     </div><?php endif; ?><div class="card-panel" style="margin-bottom:0">

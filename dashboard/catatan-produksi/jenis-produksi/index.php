@@ -73,8 +73,8 @@ $totalJenisProduksi = (int) $totalStmt->fetchColumn();
                 </ul>
                 <p class="nav-section-label">Pencatatan</p>
                 <ul style="list-style:none;padding:0;margin:0;">
-                    <li class="nav-item"><a href="../rekam-kesehatan/index.php" class="nav-link-item"><i class="bi bi-heart-pulse"></i><span>Rekam Kesehatan</span></a></li>
-                    <li class="nav-item"><a href="../catatan-produksi/jenis-produksi/index.php" class="nav-link-item"><i class="bi bi-journal-richtext"></i><span>Catatan Produksi</span></a></li>
+                    <li class="nav-item"><a href="../../rekam-kesehatan/index.php" class="nav-link-item"><i class="bi bi-heart-pulse"></i><span>Rekam Kesehatan</span></a></li>
+                    <li class="nav-item"><a href="../index.php" class="nav-link-item"><i class="bi bi-journal-richtext"></i><span>Catatan Produksi</span></a></li>
                     <li class="nav-item" style="margin-left: 20px;"><a href="index.php" class="nav-link-item active"><i class="bi bi-droplet-half "></i><span>Jenis Produksi</span></a></li>
                 </ul>
             </nav>

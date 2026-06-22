@@ -8,7 +8,7 @@ $dbname = 'db_peternakan';
 $username = 'root';
 $password = '';
 
-$dsn = "mysql:host={$host};port={$port};dbname={$dbname};charset=utf8mb4";
+$dsn = "mysql:host={$host};port={$port};dbname={$dbname};charset=utf8mb4"; // Data Source Name
 
 $options = [
     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,

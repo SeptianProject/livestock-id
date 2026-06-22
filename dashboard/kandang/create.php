@@ -92,6 +92,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <li class="nav-item"><a href="index.php" class="nav-link-item active"><i class="bi bi-house-door"></i><span>Kandang</span></a></li>
                     <li class="nav-item"><a href="../petugas/index.php" class="nav-link-item"><i class="bi bi-people"></i><span>Petugas</span></a></li>
                 </ul>
+                <p class="nav-section-label">Pencatatan</p>
+                <ul style="list-style: none; padding: 0; margin: 0">
+                    <li class="nav-item"><a href="../rekam-kesehatan/index.php" class="nav-link-item"><i class="bi bi-heart-pulse"></i><span>Rekam Kesehatan</span></a></li>
+                    <li class="nav-item"><a href="../catatan-produksi/index.php" class="nav-link-item"><i class="bi bi-journal-text"></i><span>Catatan Produksi</span></a></li>
+                </ul>
             </nav>
         </aside>
 
